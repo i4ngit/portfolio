@@ -1,69 +1,36 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { href: "/research", label: "Research" },
-  { href: "/experience", label: "Experience" },
-  { href: "/milestones", label: "Milestones" },
-  { href: "/news", label: "News" },
-  { href: "/contact", label: "Contact" },
+  { href: "/#about", label: "About" },
+  { href: "/#news", label: "News" },
+  { href: "/#research", label: "Research" },
+  { href: "/#experience", label: "Experience" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => setOpen(false), [pathname]);
-
-  const isHome = pathname === "/";
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isHome && !scrolled
-          ? "bg-transparent"
-          : "bg-white/95 backdrop-blur-sm border-b border-border shadow-sm"
-      )}
-    >
-      <nav className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-        {/* Logo */}
+    <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
+      <nav className="max-w-2xl mx-auto px-5 sm:px-8 flex items-center justify-between h-14">
         <Link
           href="/"
-          className={cn(
-            "font-serif text-xl font-bold tracking-tight transition-colors duration-300",
-            isHome && !scrolled ? "text-white" : "text-slate-text"
-          )}
+          className="text-sm font-medium text-gray-900 hover:text-gray-500 transition-colors"
         >
           Ian Ocampo
         </Link>
 
-        {/* Desktop nav */}
-        <ul className="hidden md:flex items-center gap-1">
+        <ul className="hidden md:flex items-center gap-6">
           {NAV_LINKS.map(({ href, label }) => (
             <li key={href}>
               <Link
                 href={href}
-                className={cn(
-                  "px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200",
-                  pathname === href
-                    ? "text-navy bg-blue-50"
-                    : isHome && !scrolled
-                    ? "text-white/90 hover:text-white hover:bg-white/10"
-                    : "text-muted hover:text-slate-text hover:bg-surface"
-                )}
+                className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
               >
                 {label}
               </Link>
@@ -71,34 +38,23 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Mobile hamburger */}
         <button
           onClick={() => setOpen((v) => !v)}
-          className={cn(
-            "md:hidden p-2 rounded-md transition-colors",
-            isHome && !scrolled
-              ? "text-white hover:bg-white/10"
-              : "text-slate-text hover:bg-surface"
-          )}
+          className="md:hidden text-gray-400 hover:text-gray-900 transition-colors p-1"
           aria-label={open ? "Close menu" : "Open menu"}
         >
-          {open ? <X size={20} /> : <Menu size={20} />}
+          {open ? <X size={18} /> : <Menu size={18} />}
         </button>
       </nav>
 
-      {/* Mobile drawer */}
       {open && (
-        <div className="md:hidden bg-white border-t border-border px-4 py-3 space-y-1 shadow-lg">
+        <div className="md:hidden border-t border-gray-100 bg-white px-5 py-3 space-y-0.5">
           {NAV_LINKS.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className={cn(
-                "block px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
-                pathname === href
-                  ? "text-navy bg-blue-50"
-                  : "text-slate-text hover:bg-surface"
-              )}
+              onClick={() => setOpen(false)}
+              className="block py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
             >
               {label}
             </Link>

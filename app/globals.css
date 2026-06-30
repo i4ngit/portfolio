@@ -5,18 +5,39 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 56px;
   }
 
   body {
-    @apply text-slate-text bg-white antialiased;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-serif;
+    @apply text-gray-900 bg-white antialiased;
+    font-family: var(--font-inter), system-ui, sans-serif;
   }
 }
 
 @layer components {
+  /* Shared narrow content column */
+  .page-column {
+    @apply max-w-2xl mx-auto px-5 sm:px-8;
+  }
+
+  /* Section divider + header */
+  .section-block {
+    @apply mt-14 pt-10 border-t border-gray-100;
+  }
+
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-[0.15em] text-gray-400 mb-5;
+  }
+
+  /* Prose */
+  .prose-academic {
+    @apply prose prose-sm max-w-none
+           prose-headings:font-sans prose-headings:text-gray-900
+           prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
+           prose-strong:text-gray-900;
+  }
+
+  /* Admin — keep all admin styles intact */
   .section-container {
     @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16;
   }
@@ -51,14 +72,6 @@
     @apply inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full text-muted bg-gray-50 border border-gray-200;
   }
 
-  .prose-academic {
-    @apply prose prose-sm max-w-none
-           prose-headings:font-serif prose-headings:text-slate-text
-           prose-a:text-navy prose-a:no-underline hover:prose-a:underline
-           prose-strong:text-slate-text;
-  }
-
-  /* Admin-specific */
   .admin-input {
     @apply w-full rounded-md border border-border px-3 py-2 text-sm text-slate-text
            focus:outline-none focus:ring-2 focus:ring-navy focus:border-transparent

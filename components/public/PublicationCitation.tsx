@@ -1,44 +1,49 @@
 import type { Publication } from "@/lib/types";
-import { ExternalLink } from "lucide-react";
-import { TYPE_COLORS } from "@/lib/utils";
 
 interface PublicationCitationProps {
   pub: Publication;
+  index?: number;
 }
 
-export default function PublicationCitation({ pub }: PublicationCitationProps) {
-  return (
-    <div className="flex gap-4 py-4 border-b border-border last:border-0 group">
-      <div className="flex-shrink-0 mt-0.5">
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded ${TYPE_COLORS[pub.type] ?? "bg-gray-100 text-gray-700"}`}>
-          {pub.type.charAt(0).toUpperCase() + pub.type.slice(1)}
-        </span>
-      </div>
+const TYPE_LABEL: Record<Publication["type"], string> = {
+  journal: "Journal",
+  conference: "Conference",
+  poster: "Poster",
+  preprint: "Preprint",
+};
 
+export default function PublicationCitation({ pub, index }: PublicationCitationProps) {
+  return (
+    <div className="flex gap-4 py-4 border-b border-gray-100 last:border-0">
+      {index !== undefined && (
+        <span className="text-gray-300 text-sm font-mono flex-shrink-0 w-5 text-right mt-0.5">
+          {index}.
+        </span>
+      )}
       <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between gap-2">
-          <h4 className="text-sm font-semibold text-slate-text leading-snug">{pub.title}</h4>
+        <p className="text-sm text-gray-900 leading-snug font-medium">{pub.title}</p>
+        <p className="text-xs text-gray-500 mt-0.5">{pub.authors}</p>
+        <p className="text-xs text-gray-500 mt-0.5">
+          <em>{pub.journal}</em>, {pub.year}
+          {pub.doi && <span className="text-gray-400"> · doi:{pub.doi}</span>}
+        </p>
+        <div className="flex gap-3 mt-1.5 items-center">
+          <span className="text-xs text-gray-300 border border-gray-200 px-1.5 py-0.5 rounded">
+            {TYPE_LABEL[pub.type]}
+          </span>
           {pub.link && (
             <a
               href={pub.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-shrink-0 text-muted hover:text-navy transition-colors opacity-0 group-hover:opacity-100"
-              aria-label="View publication"
+              className="text-xs text-blue-600 hover:underline"
             >
-              <ExternalLink size={14} />
+              paper ↗
             </a>
           )}
         </div>
-        <p className="text-xs text-muted mt-0.5">{pub.authors}</p>
-        <p className="text-xs text-navy mt-0.5">
-          <em>{pub.journal}</em>, {pub.year}
-          {pub.doi && (
-            <span className="ml-1 not-italic text-muted">· DOI: {pub.doi}</span>
-          )}
-        </p>
         {pub.abstract && (
-          <p className="text-xs text-muted mt-2 leading-relaxed line-clamp-3">{pub.abstract}</p>
+          <p className="text-xs text-gray-400 mt-2 leading-relaxed line-clamp-3">{pub.abstract}</p>
         )}
       </div>
     </div>

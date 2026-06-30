@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getNews } from "@/lib/kv";
-import SectionHeader from "@/components/public/SectionHeader";
 import NewsList from "@/components/public/NewsList";
 
 export const metadata: Metadata = { title: "News & Updates" };
@@ -14,15 +13,16 @@ export default async function NewsPage() {
   );
 
   return (
-    <div className="pt-20">
-      <div className="section-container">
-        <SectionHeader
-          eyebrow="News"
-          title="News & Updates"
-          description="Recent achievements, publications, presentations, and milestones."
-        />
-        <NewsList posts={sorted} />
-      </div>
+    <div className="page-column py-12">
+      <h1
+        className="text-xl font-bold text-gray-900 mb-8"
+        style={{ fontFamily: "var(--font-merriweather), Georgia, serif" }}
+      >
+        News & Updates
+      </h1>
+
+      <p className="section-label">Recent updates</p>
+      <NewsList posts={sorted} showFilter={true} />
     </div>
   );
 }

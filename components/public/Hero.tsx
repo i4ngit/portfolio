@@ -1,10 +1,6 @@
-"use client";
-
 import Image from "next/image";
-import Link from "next/link";
-import { FileText, ChevronDown, Linkedin } from "lucide-react";
 import type { HeroContent } from "@/lib/types";
-import { motion } from "framer-motion";
+import { Mail, Linkedin, FileText } from "lucide-react";
 
 interface HeroProps {
   hero: HeroContent;
@@ -12,93 +8,70 @@ interface HeroProps {
 
 export default function Hero({ hero }: HeroProps) {
   return (
-    <section className="relative min-h-screen flex items-center bg-slate-text overflow-hidden">
-      {/* Subtle grid overlay */}
-      <div
-        className="absolute inset-0 opacity-5"
-        style={{
-          backgroundImage: "radial-gradient(circle, #ffffff 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-
-      {/* Gradient overlay — fades bottom to white */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent pointer-events-none" />
-
-      <div className="relative section-container flex flex-col md:flex-row items-center gap-12 md:gap-16 pt-24 pb-20">
+    <section id="about" className="pt-12 pb-4">
+      <div className="flex flex-col sm:flex-row items-start gap-7 sm:gap-10">
         {/* Photo */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="flex-shrink-0"
-        >
-          <div className="w-44 h-44 md:w-56 md:h-56 rounded-full ring-4 ring-white/20 overflow-hidden bg-white/10">
+        <div className="flex-shrink-0">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gray-100 ring-1 ring-gray-200">
             <Image
               src={hero.photoUrl}
               alt={hero.name}
-              width={224}
-              height={224}
+              width={112}
+              height={112}
               className="w-full h-full object-cover"
               priority
             />
           </div>
-        </motion.div>
+        </div>
 
         {/* Text */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="text-center md:text-left"
-        >
-          <p className="text-white/60 text-sm font-medium tracking-widest uppercase mb-3">
-            {hero.institution} · {hero.year}
-          </p>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl font-bold text-gray-900 leading-tight" style={{ fontFamily: "var(--font-merriweather), Georgia, serif" }}>
             {hero.name}
           </h1>
-          <p className="mt-3 text-xl text-white/80 font-light">{hero.headline}</p>
-          <p className="mt-5 text-white/60 max-w-xl leading-relaxed text-sm">
+          <p className="mt-1 text-gray-600 text-sm">{hero.headline}</p>
+          {hero.institution && (
+            <p className="mt-0.5 text-gray-400 text-xs">{hero.institution}</p>
+          )}
+
+          <p className="mt-4 text-gray-600 text-sm leading-relaxed">
             {hero.bio.split("\n\n")[0]}
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-3 justify-center md:justify-start">
-            <Link href="/research" className="btn-primary bg-white text-slate-text hover:bg-white/90">
-              View Research
-            </Link>
-            <a
-              href={hero.cvUrl}
-              download
-              className="btn-secondary border-white/40 text-white hover:bg-white hover:text-slate-text"
-            >
-              <FileText size={16} />
-              Download CV
-            </a>
-            <a
-              href={hero.linkedIn}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md border border-white/40 text-white text-sm font-medium hover:bg-white/10 transition-colors"
-            >
-              <Linkedin size={16} />
-              LinkedIn
-            </a>
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+            {hero.email && (
+              <a
+                href={`mailto:${hero.email}`}
+                className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                <Mail size={12} />
+                {hero.email}
+              </a>
+            )}
+            {hero.linkedIn && (
+              <a
+                href={hero.linkedIn}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                <Linkedin size={12} />
+                LinkedIn
+              </a>
+            )}
+            {hero.cvUrl && (
+              <a
+                href={hero.cvUrl}
+                download
+                className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                <FileText size={12} />
+                CV / Resume
+              </a>
+            )}
           </div>
-        </motion.div>
+        </div>
       </div>
-
-      {/* Scroll cue */}
-      <motion.a
-        href="#about"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 hover:text-white/70 transition-colors animate-bounce"
-        aria-label="Scroll down"
-      >
-        <ChevronDown size={28} />
-      </motion.a>
     </section>
   );
 }

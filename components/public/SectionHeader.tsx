@@ -1,34 +1,16 @@
 interface SectionHeaderProps {
-  eyebrow?: string;
   title: string;
+  id?: string;
   description?: string;
-  centered?: boolean;
 }
 
-export default function SectionHeader({
-  eyebrow,
-  title,
-  description,
-  centered = false,
-}: SectionHeaderProps) {
+export default function SectionHeader({ title, id, description }: SectionHeaderProps) {
   return (
-    <div className={`mb-10 ${centered ? "text-center" : ""}`}>
-      {eyebrow && (
-        <p className="text-xs font-semibold tracking-widest uppercase text-navy mb-2">
-          {eyebrow}
-        </p>
-      )}
-      <h2 className="text-3xl sm:text-4xl font-bold text-slate-text">{title}</h2>
+    <div className="mb-5">
+      <h2 id={id} className="section-label">{title}</h2>
       {description && (
-        <p className="mt-3 text-muted text-base max-w-2xl leading-relaxed">
-          {description}
-        </p>
+        <p className="text-sm text-gray-500 leading-relaxed -mt-1">{description}</p>
       )}
-      <div
-        className={`mt-4 h-0.5 w-12 bg-navy rounded-full ${
-          centered ? "mx-auto" : ""
-        }`}
-      />
     </div>
   );
 }
