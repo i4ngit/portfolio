@@ -5,7 +5,6 @@ import {
   getPublications,
   getExperience,
   getMilestones,
-  getContact,
 } from "@/lib/kv";
 import Hero from "@/components/public/Hero";
 import ResearchFilters from "@/components/public/ResearchFilters";
@@ -13,19 +12,17 @@ import PublicationCitation from "@/components/public/PublicationCitation";
 import TimelineEntry from "@/components/public/TimelineEntry";
 import MilestoneItem from "@/components/public/MilestoneItem";
 import NewsList from "@/components/public/NewsList";
-import { Mail, Linkedin, FileText } from "lucide-react";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [hero, news, research, publications, experience, milestones, contact] = await Promise.all([
+  const [hero, news, research, publications, experience, milestones] = await Promise.all([
     getHero(),
     getNews(),
     getResearch(),
     getPublications(),
     getExperience(),
     getMilestones(),
-    getContact(),
   ]);
 
   const sortedNews = [...news].sort(
@@ -41,9 +38,6 @@ export default async function HomePage() {
   });
 
   const allTags = [...new Set(research.flatMap((p) => p.tags))].sort();
-
-  const bioParagraphs = hero.bio.split("\n\n").filter(Boolean);
-  const remainingBio = bioParagraphs.slice(1);
 
   const milestonesByCategory = (
     ["academic", "application", "recognition", "research"] as const
@@ -75,21 +69,6 @@ export default async function HomePage() {
             <p className="section-label">News</p>
             <h2 className="section-heading">Recent updates</h2>
             <NewsList posts={sortedNews} showFilter={false} />
-          </section>
-        )}
-
-        {/* About — remaining bio paragraphs */}
-        {remainingBio.length > 0 && (
-          <section className="section-block" id="about">
-            <p className="section-label">About</p>
-            <h2 className="section-heading">More about me</h2>
-            <div className="space-y-4">
-              {remainingBio.map((para, i) => (
-                <p key={i} className="text-sm text-gray-600 leading-relaxed">
-                  {para}
-                </p>
-              ))}
-            </div>
           </section>
         )}
 
@@ -147,61 +126,6 @@ export default async function HomePage() {
             </div>
           </section>
         )}
-
-        {/* Contact */}
-        <section className="section-block" id="contact">
-          <p className="section-label">Contact</p>
-          <h2 className="section-heading">Let&apos;s connect</h2>
-          <p className="text-sm text-gray-600 leading-relaxed max-w-md mb-5">
-            {contact.blurb ??
-              "I'm always happy to connect about research opportunities, clinical experiences, or questions about my work. Feel free to reach out."}
-          </p>
-          <div className="space-y-2">
-            {contact.email && (
-              <div className="flex items-center gap-2 text-sm">
-                <Mail size={13} className="text-gray-400" />
-                <a
-                  href={`mailto:${contact.email}`}
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  {contact.email}
-                </a>
-              </div>
-            )}
-            {contact.linkedin && (
-              <div className="flex items-center gap-2 text-sm">
-                <Linkedin size={13} className="text-gray-400" />
-                <a
-                  href={contact.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  LinkedIn
-                </a>
-              </div>
-            )}
-            {contact.cvUrl && (
-              <div className="flex items-center gap-2 text-sm">
-                <FileText size={13} className="text-gray-400" />
-                <a
-                  href={contact.cvUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  View CV
-                </a>
-              </div>
-            )}
-            {contact.institution && (
-              <p className="text-xs text-gray-400 mt-3">
-                {contact.institution}
-                {contact.department && `, ${contact.department}`}
-              </p>
-            )}
-          </div>
-        </section>
 
         </div>
       </div>

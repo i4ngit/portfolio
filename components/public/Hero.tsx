@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { HeroContent } from "@/lib/types";
-import { Mail, Linkedin, FileText, GraduationCap } from "lucide-react";
+import { Linkedin, FileText } from "lucide-react";
 
 interface HeroProps {
   hero: HeroContent;
@@ -32,15 +32,6 @@ export default function Hero({ hero }: HeroProps) {
 
             {/* Icon links */}
             <div className="flex items-center gap-2.5 mb-8">
-              {hero.email && (
-                <a
-                  href={`mailto:${hero.email}`}
-                  className="icon-link"
-                  aria-label="Email"
-                >
-                  <Mail size={15} />
-                </a>
-              )}
               {hero.linkedIn && (
                 <a
                   href={hero.linkedIn}
@@ -63,13 +54,6 @@ export default function Hero({ hero }: HeroProps) {
                   <FileText size={15} />
                 </a>
               )}
-              <Link
-                href="/#research"
-                className="icon-link"
-                aria-label="Research"
-              >
-                <GraduationCap size={15} />
-              </Link>
             </div>
 
             {/* CTA buttons */}
