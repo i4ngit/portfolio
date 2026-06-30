@@ -26,6 +26,7 @@ export interface ResearchProject {
   status?: "ongoing" | "completed" | "published";
   coverImage?: string;          // hero image URL
   images?: string[];            // gallery image URLs
+  pdfUrl?: string;              // per-project PDF (served via /api/document/[name])
   techniques?: string[];        // for smart recommendations
   piName?: string;
   piTitle?: string;

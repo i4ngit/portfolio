@@ -27,7 +27,7 @@ export default function ResearchCard({ project, onClick }: ResearchCardProps) {
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <h3 className="text-sm font-semibold text-gray-900 group-hover:text-navy transition-colors">
+            <h3 className="text-sm font-semibold text-gray-900 group-hover:text-gray-600 transition-colors">
               {project.title}
             </h3>
             {project.status && (
@@ -47,27 +47,9 @@ export default function ResearchCard({ project, onClick }: ResearchCardProps) {
         <p className="text-xs text-gray-500 mt-2 leading-relaxed line-clamp-2">{project.description}</p>
       )}
 
-      <div className="flex flex-wrap items-center gap-3 mt-2.5">
-        <div className="flex flex-wrap gap-1.5">
-          {project.tags.slice(0, 4).map((tag) => (
-            <span
-              key={tag}
-              className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-        {project.projectType && (
-          <span className="text-xs text-gray-300 ml-auto">
-            {TYPE_LABEL[project.projectType] ?? project.projectType}
-          </span>
-        )}
-      </div>
-
-      {onClick && (
-        <p className="text-xs text-gray-400 group-hover:text-navy mt-1 transition-colors">
-          Click to view details →
+      {project.projectType && (
+        <p className="text-xs text-gray-400 mt-2">
+          {TYPE_LABEL[project.projectType] ?? project.projectType}
         </p>
       )}
     </button>

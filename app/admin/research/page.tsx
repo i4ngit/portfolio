@@ -4,6 +4,8 @@ import { useState, useEffect, FormEvent } from "react";
 import type { ResearchProject, Publication } from "@/lib/types";
 import { generateId } from "@/lib/utils";
 import AdminFormField from "@/components/admin/AdminFormField";
+import MultiPhotoUpload from "@/components/admin/MultiPhotoUpload";
+import DocumentUpload from "@/components/admin/DocumentUpload";
 import SaveBar from "@/components/admin/SaveBar";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import { useSave } from "@/lib/useSave";
@@ -13,7 +15,7 @@ const EMPTY_PROJECT: Omit<ResearchProject, "id"> = {
   title: "", lab: "", institution: "", description: "", fullDescription: "",
   findings: "", period: "", tags: [], techniques: [], featured: false,
   projectType: "research", status: "ongoing", coverImage: "", images: [],
-  piName: "", piTitle: "", piQuote: "", link: "",
+  pdfUrl: "", piName: "", piTitle: "", piQuote: "", link: "",
 };
 
 const EMPTY_PUB: Omit<Publication, "id"> = {
@@ -49,7 +51,6 @@ export default function AdminResearchPage() {
   const [isNewPub, setIsNewPub] = useState(false);
   const [tagsText, setTagsText] = useState("");
   const [techniquesText, setTechniquesText] = useState("");
-  const [imagesText, setImagesText] = useState("");
   const [deletingProject, setDeletingProject] = useState<string | null>(null);
   const [deletingPub, setDeletingPub] = useState<string | null>(null);
   const [tab, setTab] = useState<"projects" | "publications">("projects");
@@ -77,7 +78,7 @@ export default function AdminResearchPage() {
 
   function startAddProject() {
     setEditingProject({ id: generateId(), ...EMPTY_PROJECT });
-    setTagsText(""); setTechniquesText(""); setImagesText("");
+    setTagsText(""); setTechniquesText("");
     setIsNewProject(true);
   }
 
@@ -85,7 +86,6 @@ export default function AdminResearchPage() {
     setEditingProject({ ...p });
     setTagsText(p.tags.join(", "));
     setTechniquesText((p.techniques ?? []).join(", "));
-    setImagesText((p.images ?? []).join("\n"));
     setIsNewProject(false);
   }
 
@@ -96,7 +96,6 @@ export default function AdminResearchPage() {
       ...editingProject,
       tags: tagsText.split(",").map(t => t.trim()).filter(Boolean),
       techniques: techniquesText.split(",").map(t => t.trim()).filter(Boolean),
-      images: imagesText.split("\n").map(u => u.trim()).filter(Boolean),
     };
     const updated = isNewProject
       ? [...projects, withExtras]
@@ -188,18 +187,21 @@ export default function AdminResearchPage() {
                 <AdminFormField label="Techniques (comma-separated)" name="techniques" value={techniquesText} onChange={setTechniquesText} placeholder="ELISA, Chart Review, R" hint="Used for smart recommendations." />
               </div>
 
-              <AdminFormField label="Cover Image URL" name="coverImage" value={editingProject.coverImage ?? ""} onChange={setProjectField("coverImage")} hint="Optional hero image shown at top of card. Use /public path or external URL." />
               <div>
-                <label className="admin-label">Gallery Image URLs</label>
-                <textarea
-                  value={imagesText}
-                  onChange={e => setImagesText(e.target.value)}
-                  rows={3}
-                  className="admin-input resize-y"
-                  placeholder="One image URL per line (figures, diagrams, posters)"
+                <label className="admin-label">Gallery Photos</label>
+                <MultiPhotoUpload
+                  images={editingProject.images ?? []}
+                  onChange={(images) => setEditingProject(prev => prev ? { ...prev, images } : prev)}
+                  namePrefix={`research-${editingProject.id}`}
                 />
-                <p className="mt-1 text-xs text-muted">Each line becomes a figure thumbnail in the project modal.</p>
               </div>
+
+              <DocumentUpload
+                currentUrl={editingProject.pdfUrl ?? ""}
+                onUploaded={(url) => setEditingProject(prev => prev ? { ...prev, pdfUrl: url } : prev)}
+                docName={`research-${editingProject.id}`}
+                label="Project PDF (poster, paper, report)"
+              />
 
               <div className="border-t border-border pt-4 space-y-4">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted">PI / Mentor</p>

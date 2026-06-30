@@ -1,24 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ExternalLink, Quote, FlaskConical, HeartPulse, BookOpen } from "lucide-react";
+import { X, ExternalLink, Quote, FileText } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import type { ResearchProject } from "@/lib/types";
-import ImageGallery from "./ImageGallery";
-import RelatedProjects from "./RelatedProjects";
-import { TYPE_COLORS } from "@/lib/utils";
 
-const PROJECT_TYPE_ICON = {
-  research: FlaskConical,
-  clinical: HeartPulse,
-  coursework: BookOpen,
-};
-
-const STATUS_BADGE = {
-  ongoing: "bg-blue-50 text-navy border-blue-100",
-  completed: "bg-green-50 text-green-accent border-green-100",
-  published: "bg-amber-50 text-amber-700 border-amber-100",
+const STATUS_LABEL: Record<string, string> = {
+  ongoing: "Ongoing",
+  completed: "Completed",
+  published: "Published",
 };
 
 interface ProjectModalProps {
@@ -28,161 +19,209 @@ interface ProjectModalProps {
   onSelect: (project: ResearchProject) => void;
 }
 
-export default function ProjectModal({ project, allProjects, onClose, onSelect }: ProjectModalProps) {
+export default function ProjectModal({ project, onClose }: ProjectModalProps) {
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+
   useEffect(() => {
     if (!project) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (lightboxSrc) setLightboxSrc(null);
+        else onClose();
+      }
+    };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [project, onClose]);
+  }, [project, onClose, lightboxSrc]);
 
-  const TypeIcon = project?.projectType ? PROJECT_TYPE_ICON[project.projectType] : FlaskConical;
+  const hasImages = (project?.images?.length ?? 0) > 0;
+  const hasPdf = !!project?.pdfUrl;
+  const hasSidebar = hasImages || hasPdf;
 
   return (
-    <AnimatePresence>
-      {project && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 md:p-8"
-          onClick={onClose}
-        >
+    <>
+      <AnimatePresence>
+        {project && (
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 16 }}
-            transition={{ duration: 0.25 }}
-            className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl my-4 overflow-hidden"
-            onClick={e => e.stopPropagation()}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 md:p-8"
+            onClick={onClose}
           >
-            {/* Header */}
-            <div className="bg-slate-text px-8 pt-8 pb-6 relative">
-              <button
-                onClick={onClose}
-                className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors p-1 rounded"
-                aria-label="Close"
-              >
-                <X size={20} />
-              </button>
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 16 }}
+              transition={{ duration: 0.25 }}
+              className="relative bg-cream rounded-2xl shadow-2xl w-full max-w-4xl my-4 overflow-hidden"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* ── Header ───────────────────────────────────────── */}
+              <div className="px-8 pt-8 pb-6 border-b border-black/10 relative">
+                <button
+                  onClick={onClose}
+                  className="absolute top-5 right-5 text-gray-400 hover:text-gray-900 transition-colors p-1 rounded"
+                  aria-label="Close"
+                >
+                  <X size={18} />
+                </button>
 
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 rounded-md bg-white/10 flex items-center justify-center">
-                  <TypeIcon size={14} className="text-white" />
-                </div>
-                <span className="text-white/60 text-xs font-medium uppercase tracking-wider">
-                  {project.projectType ?? "Research"}
-                </span>
-                {project.status && (
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${STATUS_BADGE[project.status]}`}>
-                    {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-                  </span>
-                )}
-              </div>
-
-              <h2 className="text-white text-xl font-bold font-serif leading-snug pr-8">{project.title}</h2>
-              <p className="text-white/70 text-sm mt-1">{project.lab} · {project.institution}</p>
-              <p className="text-white/50 text-xs mt-1">{project.period}</p>
-
-              <div className="flex flex-wrap gap-1.5 mt-4">
-                {project.tags.map(tag => (
-                  <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/80">{tag}</span>
-                ))}
-                {project.techniques?.map(t => (
-                  <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-navy/60 text-white/70">{t}</span>
-                ))}
-              </div>
-            </div>
-
-            {/* Body */}
-            <div className="flex flex-col lg:flex-row">
-              {/* Main content */}
-              <div className="flex-1 px-8 py-6 space-y-6 min-w-0">
-
-                {/* Summary */}
-                <div>
-                  <p className="text-sm text-muted leading-relaxed">{project.description}</p>
+                <div className="flex items-center gap-3 mb-3">
+                  <p className="section-label !mb-0">
+                    {project.projectType ?? "Research"}
+                  </p>
+                  {project.status && (
+                    <span className="text-xs font-medium text-gray-500 border border-gray-300 px-2 py-0.5 rounded-full">
+                      {STATUS_LABEL[project.status] ?? project.status}
+                    </span>
+                  )}
                 </div>
 
-                {/* Key finding teaser */}
-                {project.findings && (
-                  <div className="bg-blue-50 border-l-4 border-navy rounded-r-lg px-4 py-3">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-navy mb-1">Key Finding</p>
-                    <p className="text-sm text-slate-text leading-relaxed">{project.findings}</p>
-                  </div>
-                )}
+                <h2 className="font-display font-bold text-2xl text-gray-900 leading-snug pr-8">
+                  {project.title}
+                </h2>
+                <p className="text-sm text-gray-500 mt-1.5">
+                  {project.lab} · {project.institution}
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">{project.period}</p>
+              </div>
 
-                {/* Image gallery */}
-                {project.images && project.images.length > 0 && (
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-muted mb-3">Figures</p>
-                    <ImageGallery images={project.images} title={project.title} />
-                  </div>
-                )}
+              {/* ── Body ─────────────────────────────────────────── */}
+              <div className={`flex flex-col ${hasSidebar ? "lg:flex-row" : ""}`}>
 
-                {/* Full description */}
-                {project.fullDescription && (
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-muted mb-3">Methods & Findings</p>
-                    <div className="prose-academic text-sm">
-                      <ReactMarkdown>{project.fullDescription}</ReactMarkdown>
+                {/* Main content */}
+                <div className="flex-1 px-8 py-6 space-y-6 min-w-0 bg-white">
+
+                  <p className="text-sm text-gray-600 leading-relaxed">{project.description}</p>
+
+                  {project.findings && (
+                    <div className="border-l-4 border-gray-900 pl-4 py-1">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Key Finding</p>
+                      <p className="text-sm text-gray-800 leading-relaxed">{project.findings}</p>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* PI Quote */}
-                {project.piQuote && (
-                  <div className="bg-surface rounded-xl p-5 border border-border">
-                    <Quote size={18} className="text-navy/30 mb-2" />
-                    <p className="text-sm text-slate-text italic leading-relaxed">&ldquo;{project.piQuote}&rdquo;</p>
-                    <div className="mt-3 pt-3 border-t border-border">
-                      <p className="text-xs font-semibold text-slate-text">{project.piName}</p>
-                      {project.piTitle && <p className="text-xs text-muted">{project.piTitle}</p>}
+                  {project.fullDescription && (
+                    <div>
+                      <p className="section-label">Methods &amp; Findings</p>
+                      <div className="prose-academic text-sm">
+                        <ReactMarkdown>{project.fullDescription}</ReactMarkdown>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Link */}
-                {project.link && (
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm text-navy hover:underline"
-                  >
-                    <ExternalLink size={14} /> View project / publication
-                  </a>
-                )}
+                  {project.piQuote && (
+                    <div className="bg-cream rounded-xl p-5 border border-black/10">
+                      <Quote size={16} className="text-gray-300 mb-2" />
+                      <p className="text-sm text-gray-700 italic leading-relaxed">&ldquo;{project.piQuote}&rdquo;</p>
+                      <div className="mt-3 pt-3 border-t border-black/10">
+                        <p className="text-xs font-semibold text-gray-900">{project.piName}</p>
+                        {project.piTitle && <p className="text-xs text-gray-400 mt-0.5">{project.piTitle}</p>}
+                      </div>
+                    </div>
+                  )}
 
-                {/* Publication type badge */}
-                {project.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
-                    {project.tags.map(tag => (
-                      <span key={tag} className={`text-xs font-medium px-2.5 py-1 rounded-full ${TYPE_COLORS["research"] ?? "bg-blue-50 text-navy"}`}>
-                        {tag}
-                      </span>
-                    ))}
+                  {project.link && !project.pdfUrl && (
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                      <ExternalLink size={14} /> View project / publication
+                    </a>
+                  )}
+                </div>
+
+                {/* Sidebar — only when there are images or a PDF */}
+                {hasSidebar && (
+                  <div className="lg:w-60 lg:border-l border-t lg:border-t-0 border-black/10 bg-cream px-5 py-6 flex-shrink-0 space-y-6">
+
+                    {hasImages && (
+                      <div>
+                        <p className="section-label">Gallery</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {project.images!.map((src, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setLightboxSrc(src)}
+                              className="aspect-square rounded-lg overflow-hidden bg-gray-100 hover:opacity-90 transition-opacity"
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={src} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {hasPdf && (
+                      <div>
+                        <p className="section-label">Document</p>
+                        <a
+                          href={project.pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gray-900 text-sm text-gray-900 hover:bg-gray-900 hover:text-white transition-colors"
+                        >
+                          <FileText size={14} /> View PDF
+                        </a>
+                      </div>
+                    )}
+
+                    {project.link && (
+                      <div>
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+                        >
+                          <ExternalLink size={13} /> External link
+                        </a>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
-
-              {/* Related sidebar */}
-              <div className="lg:w-64 lg:border-l border-t lg:border-t-0 border-border bg-surface px-5 py-6 flex-shrink-0">
-                <RelatedProjects
-                  current={project}
-                  allProjects={allProjects}
-                  onSelect={onSelect}
-                />
-              </div>
-            </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightboxSrc && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+            onClick={() => setLightboxSrc(null)}
+          >
+            <button
+              className="absolute top-4 right-4 text-white/70 hover:text-white p-2"
+              onClick={() => setLightboxSrc(null)}
+              aria-label="Close"
+            >
+              <X size={24} />
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={lightboxSrc}
+              alt="Gallery photo"
+              className="max-w-4xl max-h-[85vh] w-full h-full object-contain rounded-lg"
+              onClick={e => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
