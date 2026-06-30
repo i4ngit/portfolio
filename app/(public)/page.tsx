@@ -47,117 +47,139 @@ export default async function HomePage() {
   )
     .map((cat) => ({
       cat,
-      label: { academic: "Academic", application: "Application", recognition: "Recognition", research: "Research" }[cat],
+      label: {
+        academic: "Academic",
+        application: "Application",
+        recognition: "Recognition",
+        research: "Research",
+      }[cat],
       items: milestones.filter((m) => m.category === cat),
     }))
     .filter(({ items }) => items.length > 0);
 
   return (
-    <div className="page-column pb-20">
-      {/* About / Hero */}
-      <Hero hero={hero} />
+    <>
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <div className="wide-column">
+        <Hero hero={hero} />
+      </div>
 
-      {/* News */}
-      {sortedNews.length > 0 && (
-        <section className="section-block" id="news">
-          <p className="section-label">News</p>
-          <NewsList posts={sortedNews} showFilter={false} />
-        </section>
-      )}
+      {/* ── Content sections: narrow column ──────────────── */}
+      <div className="page-column pb-24">
 
-      {/* Research */}
-      {(research.length > 0 || sortedPubs.length > 0) && (
-        <section className="section-block" id="research">
-          {research.length > 0 && (
-            <>
-              <p className="section-label">Research</p>
-              <ResearchFilters projects={research} tags={allTags} showFilters={false} />
-            </>
-          )}
+        {/* News */}
+        {sortedNews.length > 0 && (
+          <section className="section-block" id="news">
+            <p className="section-label">News</p>
+            <NewsList posts={sortedNews} showFilter={false} />
+          </section>
+        )}
 
-          {sortedPubs.length > 0 && (
-            <div className={research.length > 0 ? "mt-10" : ""}>
-              <p className="section-label">Publications</p>
-              <div>
-                {sortedPubs.map((pub, i) => (
-                  <PublicationCitation key={pub.id} pub={pub} index={i + 1} />
-                ))}
-              </div>
+        {/* Research Projects */}
+        {research.length > 0 && (
+          <section className="section-block" id="research">
+            <p className="section-label">Research</p>
+            <ResearchFilters projects={research} tags={allTags} showFilters={false} />
+          </section>
+        )}
+
+        {/* Publications — separate section */}
+        {sortedPubs.length > 0 && (
+          <section className="section-block" id="publications">
+            <p className="section-label">Publications</p>
+            <div>
+              {sortedPubs.map((pub, i) => (
+                <PublicationCitation key={pub.id} pub={pub} index={i + 1} />
+              ))}
             </div>
-          )}
-        </section>
-      )}
+          </section>
+        )}
 
-      {/* Experience */}
-      {sortedExp.length > 0 && (
-        <section className="section-block" id="experience">
-          <p className="section-label">Experience</p>
-          <div>
-            {sortedExp.map((entry) => (
-              <TimelineEntry key={entry.id} entry={entry} />
-            ))}
-          </div>
-        </section>
-      )}
+        {/* Experience */}
+        {sortedExp.length > 0 && (
+          <section className="section-block" id="experience">
+            <p className="section-label">Experience</p>
+            <div>
+              {sortedExp.map((entry) => (
+                <TimelineEntry key={entry.id} entry={entry} />
+              ))}
+            </div>
+          </section>
+        )}
 
-      {/* Milestones / Roadmap */}
-      {milestones.length > 0 && (
-        <section className="section-block" id="milestones">
-          <p className="section-label">Milestones</p>
-          <div className="space-y-8">
-            {milestonesByCategory.map(({ cat, label, items }) => (
-              <div key={cat}>
-                <p className="text-xs text-gray-400 mb-2 font-medium">{label}</p>
-                <div>
-                  {items.map((m) => (
-                    <MilestoneItem key={m.id} milestone={m} />
-                  ))}
+        {/* Milestones */}
+        {milestones.length > 0 && (
+          <section className="section-block" id="milestones">
+            <p className="section-label">Milestones</p>
+            <div className="space-y-8">
+              {milestonesByCategory.map(({ cat, label, items }) => (
+                <div key={cat}>
+                  <p className="text-xs text-gray-400 mb-2 font-medium">{label}</p>
+                  <div>
+                    {items.map((m) => (
+                      <MilestoneItem key={m.id} milestone={m} />
+                    ))}
+                  </div>
                 </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Contact */}
+        <section className="section-block" id="contact">
+          <p className="section-label">Contact</p>
+          <p className="text-sm text-gray-600 leading-relaxed max-w-md mb-5">
+            {contact.blurb ??
+              "I'm always happy to connect about research opportunities, clinical experiences, or questions about my work. Feel free to reach out."}
+          </p>
+          <div className="space-y-2">
+            {contact.email && (
+              <div className="flex items-center gap-2 text-sm">
+                <Mail size={13} className="text-gray-400" />
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  {contact.email}
+                </a>
               </div>
-            ))}
+            )}
+            {contact.linkedin && (
+              <div className="flex items-center gap-2 text-sm">
+                <Linkedin size={13} className="text-gray-400" />
+                <a
+                  href={contact.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  LinkedIn
+                </a>
+              </div>
+            )}
+            {contact.cvUrl && (
+              <div className="flex items-center gap-2 text-sm">
+                <FileText size={13} className="text-gray-400" />
+                <a
+                  href={contact.cvUrl}
+                  download
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  Download CV
+                </a>
+              </div>
+            )}
+            {contact.institution && (
+              <p className="text-xs text-gray-400 mt-3">
+                {contact.institution}
+                {contact.department && `, ${contact.department}`}
+              </p>
+            )}
           </div>
         </section>
-      )}
 
-      {/* Contact */}
-      <section className="section-block" id="contact">
-        <p className="section-label">Contact</p>
-        <p className="text-sm text-gray-600 leading-relaxed max-w-md">
-          {contact.blurb ?? `I'm always happy to connect about research opportunities, clinical experiences, or questions about my work. Feel free to reach out.`}
-        </p>
-        <div className="mt-5 space-y-2">
-          {contact.email && (
-            <div className="flex items-center gap-2 text-sm">
-              <Mail size={13} className="text-gray-400" />
-              <a href={`mailto:${contact.email}`} className="text-gray-600 hover:text-gray-900 transition-colors">
-                {contact.email}
-              </a>
-            </div>
-          )}
-          {contact.linkedin && (
-            <div className="flex items-center gap-2 text-sm">
-              <Linkedin size={13} className="text-gray-400" />
-              <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">
-                LinkedIn
-              </a>
-            </div>
-          )}
-          {contact.cvUrl && (
-            <div className="flex items-center gap-2 text-sm">
-              <FileText size={13} className="text-gray-400" />
-              <a href={contact.cvUrl} download className="text-gray-600 hover:text-gray-900 transition-colors">
-                Download CV
-              </a>
-            </div>
-          )}
-          {contact.institution && (
-            <p className="text-xs text-gray-400 mt-3">
-              {contact.institution}
-              {contact.department && `, ${contact.department}`}
-            </p>
-          )}
-        </div>
-      </section>
-    </div>
+      </div>
+    </>
   );
 }

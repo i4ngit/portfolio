@@ -25,6 +25,7 @@ const config: Config = {
         slate: {
           text: "#1A1A2E",
         },
+        cream: "#EDEAE4",
         muted: "#6B7280",
         surface: "#F8F9FA",
         border: "#E5E7EB",
@@ -32,6 +33,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         serif: ["var(--font-merriweather)", "Georgia", "serif"],
+        display: ["var(--font-display)", "Georgia", "serif"],
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-in-out",

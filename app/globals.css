@@ -5,31 +5,56 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 56px;
+    scroll-padding-top: 60px;
   }
 
   body {
-    @apply text-gray-900 bg-white antialiased;
+    @apply text-gray-900 bg-cream antialiased;
     font-family: var(--font-inter), system-ui, sans-serif;
   }
 }
 
 @layer components {
-  /* Shared narrow content column */
+  /* ── Public layout ─────────────────────────────────────── */
+
+  /* Wide container: hero + nav */
+  .wide-column {
+    @apply max-w-5xl mx-auto px-6 sm:px-10;
+  }
+
+  /* Narrow column: text sections */
   .page-column {
     @apply max-w-2xl mx-auto px-5 sm:px-8;
   }
 
-  /* Section divider + header */
   .section-block {
-    @apply mt-14 pt-10 border-t border-gray-100;
+    @apply mt-14 pt-10 border-t border-black/10;
   }
 
   .section-label {
     @apply text-xs font-semibold uppercase tracking-[0.15em] text-gray-400 mb-5;
   }
 
-  /* Prose */
+  /* ── Hero elements (William-inspired) ─────────────────── */
+
+  .icon-link {
+    @apply w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center
+           text-gray-500 hover:border-gray-900 hover:text-gray-900 transition-colors;
+  }
+
+  .cta-primary {
+    @apply inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white
+           rounded-full text-sm font-medium hover:bg-gray-700 transition-colors;
+  }
+
+  .cta-secondary {
+    @apply inline-flex items-center gap-2 px-6 py-2.5 border border-gray-900
+           text-gray-900 rounded-full text-sm font-medium hover:bg-gray-900
+           hover:text-white transition-colors;
+  }
+
+  /* ── Prose ─────────────────────────────────────────────── */
+
   .prose-academic {
     @apply prose prose-sm max-w-none
            prose-headings:font-sans prose-headings:text-gray-900
@@ -37,7 +62,8 @@
            prose-strong:text-gray-900;
   }
 
-  /* Admin — keep all admin styles intact */
+  /* ── Admin (unchanged) ─────────────────────────────────── */
+
   .section-container {
     @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16;
   }

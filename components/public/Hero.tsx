@@ -1,72 +1,101 @@
+import Link from "next/link";
 import type { HeroContent } from "@/lib/types";
-import { Mail, Linkedin, FileText } from "lucide-react";
+import { Mail, Linkedin, FileText, GraduationCap } from "lucide-react";
 
 interface HeroProps {
   hero: HeroContent;
 }
 
 export default function Hero({ hero }: HeroProps) {
+  const firstParagraph = hero.bio.split("\n\n")[0];
+
   return (
-    <section id="about" className="pt-12 pb-4">
-      <div className="flex flex-col sm:flex-row items-start gap-7 sm:gap-10">
-        {/* Photo */}
-        <div className="flex-shrink-0">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gray-100 ring-1 ring-gray-200">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={hero.photoUrl}
-              alt={hero.name}
-              className="w-full h-full object-cover"
-            />
+    <section id="about" className="min-h-[88vh] flex items-center">
+      <div className="wide-column w-full py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-20 items-center">
+
+          {/* ── Left: Text ───────────────────────────────── */}
+          <div className="order-2 lg:order-1">
+            {(hero.institution || hero.year) && (
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-gray-500 mb-5">
+                {[hero.institution, hero.year].filter(Boolean).join(" · ")}
+              </p>
+            )}
+
+            <h1 className="font-display font-bold text-5xl sm:text-6xl lg:text-[4.5rem] leading-[1.04] text-gray-900 mb-7">
+              {hero.headline}
+            </h1>
+
+            <p className="text-gray-600 text-base sm:text-lg leading-relaxed max-w-lg mb-9">
+              {firstParagraph}
+            </p>
+
+            {/* Icon links */}
+            <div className="flex items-center gap-2.5 mb-8">
+              {hero.email && (
+                <a
+                  href={`mailto:${hero.email}`}
+                  className="icon-link"
+                  aria-label="Email"
+                >
+                  <Mail size={15} />
+                </a>
+              )}
+              {hero.linkedIn && (
+                <a
+                  href={hero.linkedIn}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="icon-link"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin size={15} />
+                </a>
+              )}
+              {hero.cvUrl && (
+                <a
+                  href={hero.cvUrl}
+                  download
+                  className="icon-link"
+                  aria-label="Download CV"
+                >
+                  <FileText size={15} />
+                </a>
+              )}
+              <Link
+                href="/#research"
+                className="icon-link"
+                aria-label="Research"
+              >
+                <GraduationCap size={15} />
+              </Link>
+            </div>
+
+            {/* CTA buttons */}
+            <div className="flex flex-wrap items-center gap-3">
+              <Link href="/#research" className="cta-primary">
+                Selected work
+              </Link>
+              {hero.email && (
+                <a href={`mailto:${hero.email}`} className="cta-secondary">
+                  Email me
+                </a>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Text */}
-        <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-bold text-gray-900 leading-tight" style={{ fontFamily: "var(--font-merriweather), Georgia, serif" }}>
-            {hero.name}
-          </h1>
-          <p className="mt-1 text-gray-600 text-sm">{hero.headline}</p>
-          {hero.institution && (
-            <p className="mt-0.5 text-gray-400 text-xs">{hero.institution}</p>
-          )}
-
-          <p className="mt-4 text-gray-600 text-sm leading-relaxed">
-            {hero.bio.split("\n\n")[0]}
-          </p>
-
-          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
-            {hero.email && (
-              <a
-                href={`mailto:${hero.email}`}
-                className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors"
-              >
-                <Mail size={12} />
-                {hero.email}
-              </a>
-            )}
-            {hero.linkedIn && (
-              <a
-                href={hero.linkedIn}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors"
-              >
-                <Linkedin size={12} />
-                LinkedIn
-              </a>
-            )}
-            {hero.cvUrl && (
-              <a
-                href={hero.cvUrl}
-                download
-                className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors"
-              >
-                <FileText size={12} />
-                CV / Resume
-              </a>
-            )}
+          {/* ── Right: Photo ─────────────────────────────── */}
+          <div className="order-1 lg:order-2">
+            <div className="rounded-2xl overflow-hidden w-full aspect-[3/4] max-h-[580px] bg-gray-200">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={hero.photoUrl || "/placeholder-photo.jpg"}
+                alt={hero.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
+
         </div>
       </div>
     </section>
