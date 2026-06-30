@@ -55,9 +55,10 @@ export default function Hero({ hero }: HeroProps) {
               {hero.cvUrl && (
                 <a
                   href={hero.cvUrl}
-                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="icon-link"
-                  aria-label="Download CV"
+                  aria-label="View CV"
                 >
                   <FileText size={15} />
                 </a>

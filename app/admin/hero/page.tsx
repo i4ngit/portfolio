@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import AdminFormField from "@/components/admin/AdminFormField";
 import PhotoUpload from "@/components/admin/PhotoUpload";
+import CVUpload from "@/components/admin/CVUpload";
 import SaveBar from "@/components/admin/SaveBar";
 import { useSave } from "@/lib/useSave";
 import type { HeroContent } from "@/lib/types";
@@ -34,11 +35,27 @@ export default function AdminHeroPage() {
       <h1 className="text-2xl font-bold font-serif text-slate-text mb-6">About / Hero</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
 
-        {/* Photo upload — prominent at top */}
+        {/* Photo upload */}
         <div className="card">
           <PhotoUpload
             currentUrl={data.photoUrl}
-            onUploaded={(url) => setData(prev => ({ ...prev, photoUrl: url }))}
+            onUploaded={async (url) => {
+              const updated = { ...data, photoUrl: url };
+              setData(updated);
+              await save(updated);
+            }}
+          />
+        </div>
+
+        {/* CV upload */}
+        <div className="card">
+          <CVUpload
+            currentUrl={data.cvUrl}
+            onUploaded={async (url) => {
+              const updated = { ...data, cvUrl: url };
+              setData(updated);
+              await save(updated);
+            }}
           />
         </div>
 
@@ -68,14 +85,6 @@ export default function AdminHeroPage() {
             <AdminFormField label="Email" name="email" value={data.email} onChange={set("email")} type="email" required />
             <AdminFormField label="LinkedIn URL" name="linkedIn" value={data.linkedIn} onChange={set("linkedIn")} type="url" />
           </div>
-
-          <AdminFormField
-            label="CV / Resume URL"
-            name="cvUrl"
-            value={data.cvUrl}
-            onChange={set("cvUrl")}
-            hint="Upload your CV to /public and use /my-cv.pdf, or paste an external link (Google Drive, Dropbox, etc.)."
-          />
 
           <SaveBar state={state} />
         </div>

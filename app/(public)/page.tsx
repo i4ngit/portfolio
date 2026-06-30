@@ -163,10 +163,11 @@ export default async function HomePage() {
                 <FileText size={13} className="text-gray-400" />
                 <a
                   href={contact.cvUrl}
-                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
-                  Download CV
+                  View CV
                 </a>
               </div>
             )}

@@ -304,3 +304,21 @@ export async function setPhoto(name: string, dataUrl: string): Promise<void> {
   }
   await kv.set(`photo:${name}`, dataUrl);
 }
+
+// CV / document storage — stores base64 PDFs, served inline via /api/cv
+
+export async function getCV(): Promise<string | null> {
+  if (!isRedisConfigured()) return null;
+  try {
+    return await kv.get<string>("cv:resume");
+  } catch {
+    return null;
+  }
+}
+
+export async function setCV(dataUrl: string): Promise<void> {
+  if (!isRedisConfigured()) {
+    throw new Error("REDIS_NOT_CONFIGURED");
+  }
+  await kv.set("cv:resume", dataUrl);
+}
