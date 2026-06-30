@@ -36,9 +36,18 @@ const DEFAULTS = {
       institution: "University Hospital",
       description:
         "Investigating serum biomarkers (GFAP, UCH-L1, S100B) as predictive indicators of long-term neurological outcomes following mild TBI in collegiate athletes.",
+      fullDescription:
+        "## Background\n\nMild traumatic brain injury (mTBI) affects millions annually, yet reliable prognostic tools remain limited. Blood-based biomarkers offer a non-invasive window into the neurological cascade following head impact.\n\n## Methods\n\nWe recruited a prospective cohort of 60+ collegiate athletes across contact and non-contact sports. Blood samples were collected at baseline, 6 hours, 24 hours, and 2 weeks post-concussion. GFAP, UCH-L1, and S100B concentrations were quantified via ELISA. Cognitive outcomes were assessed using ImPACT testing at corresponding intervals.\n\n## Preliminary Findings\n\nElevated acute GFAP levels (>0.2 ng/mL at 6h) correlated with prolonged return-to-play timelines (r=0.61, p<0.05). S100B showed high sensitivity but poor specificity, consistent with prior literature. UCH-L1 demonstrated the narrowest discriminatory window.",
+      findings: "Elevated acute GFAP levels correlated with prolonged return-to-play timelines (r=0.61, p<0.05), supporting its use as a prognostic indicator post-concussion.",
       period: "2024 – Present",
       tags: ["Neuroscience", "Biomarkers", "TBI"],
+      techniques: ["ELISA", "Cohort Study", "Biostatistics", "ImPACT"],
       featured: true,
+      projectType: "research" as const,
+      status: "ongoing" as const,
+      piName: "Dr. Jane Smith, MD PhD",
+      piTitle: "Associate Professor of Neurology",
+      piQuote: "Ian has shown exceptional independence in the lab. His attention to protocol detail and ability to enroll and retain participants has been critical to the study's progress.",
     },
     {
       id: "r2",
@@ -47,9 +56,17 @@ const DEFAULTS = {
       institution: "School of Public Health",
       description:
         "Analyzing patient-reported SDOH screening data to identify gaps in resource referral and follow-up care within rural ED settings.",
+      fullDescription:
+        "## Overview\n\nSocial determinants of health (SDOH) — including food insecurity, housing instability, and transportation barriers — are strongly associated with poor health outcomes. Emergency departments increasingly serve as safety-net settings for patients with unmet social needs.\n\n## Methods\n\nWe performed a retrospective chart review of 800+ patient encounters at two rural ED sites where SDOH screening was embedded in triage intake. Rates of positive screens, referral completion, and 30-day return visits were abstracted and linked to demographic data.\n\n## Findings\n\nOnly 34% of patients screening positive for ≥1 SDOH need received a documented resource referral. Transportation barriers were the most frequently identified need (42%) but had the lowest referral completion rate (18%). Uninsured and Medicaid patients were disproportionately affected.",
+      findings: "Only 34% of patients screening positive for SDOH needs received a resource referral; transportation barriers were most common yet least addressed.",
       period: "2023 – 2024",
       tags: ["Health Equity", "Emergency Medicine", "SDOH"],
+      techniques: ["Chart Review", "Epidemiology", "Statistical Analysis"],
       featured: false,
+      projectType: "research" as const,
+      status: "completed" as const,
+      piName: "Dr. Marcus Rivera, DrPH",
+      piTitle: "Director, Health Equity Research Center",
     },
   ] satisfies ResearchProject[],
 
@@ -195,6 +212,9 @@ async function kvGet<T>(key: string, fallback: T): Promise<T> {
 }
 
 async function kvSet<T>(key: string, value: T): Promise<void> {
+  if (!process.env.UPSTASH_REDIS_REST_URL) {
+    throw new Error("REDIS_NOT_CONFIGURED");
+  }
   await kv.set(key, value);
 }
 

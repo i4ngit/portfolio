@@ -4,7 +4,9 @@ import { useState, useEffect, FormEvent } from "react";
 import type { Milestone } from "@/lib/types";
 import { generateId } from "@/lib/utils";
 import AdminFormField from "@/components/admin/AdminFormField";
+import SaveBar from "@/components/admin/SaveBar";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
+import { useSave } from "@/lib/useSave";
 import { Plus, Pencil, Trash2, X, CheckCircle2, Clock, Circle } from "lucide-react";
 
 const EMPTY: Omit<Milestone, "id"> = {
@@ -35,33 +37,32 @@ export default function AdminMilestonesPage() {
   const [editing, setEditing] = useState<Milestone | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
+  const { save, state } = useSave("milestones");
 
   useEffect(() => {
     fetch("/api/content/milestones").then(r => r.json()).then(setItems);
   }, []);
 
-  async function save(updated: Milestone[]) {
-    setSaving(true);
-    await fetch("/api/content/milestones", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updated),
-    });
-    setItems(updated);
-    setSaving(false);
+  async function persist(updated: Milestone[]) {
+    const ok = await save(updated);
+    if (ok) setItems(updated);
+    return ok;
   }
 
   function startAdd() { setEditing({ id: generateId(), ...EMPTY }); setIsNew(true); }
   function startEdit(m: Milestone) { setEditing({ ...m }); setIsNew(false); }
-  async function handleDelete(id: string) { await save(items.filter(m => m.id !== id)); setDeleting(null); }
+
+  async function handleDelete(id: string) {
+    const ok = await persist(items.filter(m => m.id !== id));
+    if (ok) setDeleting(null);
+  }
 
   async function handleSave(e: FormEvent) {
     e.preventDefault();
     if (!editing) return;
     const updated = isNew ? [...items, editing] : items.map(m => m.id === editing.id ? editing : m);
-    await save(updated);
-    setEditing(null);
+    const ok = await persist(updated);
+    if (ok) setEditing(null);
   }
 
   function setField(key: keyof Milestone) {
@@ -72,9 +73,7 @@ export default function AdminMilestonesPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold font-serif text-slate-text">Milestones</h1>
-        {!editing && (
-          <button onClick={startAdd} className="btn-primary"><Plus size={16} /> Add Milestone</button>
-        )}
+        {!editing && <button onClick={startAdd} className="btn-primary"><Plus size={16} /> Add Milestone</button>}
       </div>
 
       {editing && (
@@ -90,10 +89,7 @@ export default function AdminMilestonesPage() {
             <AdminFormField label="Category" name="category" value={editing.category} onChange={setField("category")} type="select" options={CAT_OPTS} />
           </div>
           <AdminFormField label="Detail (optional)" name="detail" value={editing.detail ?? ""} onChange={setField("detail")} placeholder="Score: 5XX, GPA: 3.9, etc." />
-          <div className="flex gap-3 pt-2 border-t border-border">
-            <button type="submit" disabled={saving} className="btn-primary">{saving ? "Saving…" : "Save"}</button>
-            <button type="button" onClick={() => setEditing(null)} className="btn-secondary">Cancel</button>
-          </div>
+          <SaveBar state={state} />
         </form>
       )}
 
@@ -111,9 +107,7 @@ export default function AdminMilestonesPage() {
             </div>
           </div>
         ))}
-        {items.length === 0 && !editing && (
-          <p className="text-muted text-sm py-6 text-center">No milestones yet.</p>
-        )}
+        {items.length === 0 && !editing && <p className="text-muted text-sm py-6 text-center">No milestones yet.</p>}
       </div>
 
       <ConfirmDialog

@@ -44,6 +44,7 @@ export async function GET(_req: Request, { params }: { params: Params }) {
 
 export async function PUT(request: Request, { params }: { params: Params }) {
   const { section } = await params;
+
   const authenticated = await getSession();
   if (!authenticated) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -54,7 +55,19 @@ export async function PUT(request: Request, { params }: { params: Params }) {
     return NextResponse.json({ error: "Unknown section" }, { status: 404 });
   }
 
-  const body = await request.json();
-  await setter(body);
-  return NextResponse.json({ ok: true });
+  try {
+    const body = await request.json();
+    await setter(body);
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    if (msg === "REDIS_NOT_CONFIGURED") {
+      return NextResponse.json(
+        { error: "redis_not_configured" },
+        { status: 503 }
+      );
+    }
+    console.error("Save error:", msg);
+    return NextResponse.json({ error: "Failed to save" }, { status: 500 });
+  }
 }

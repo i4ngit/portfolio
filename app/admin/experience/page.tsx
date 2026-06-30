@@ -4,7 +4,9 @@ import { useState, useEffect, FormEvent } from "react";
 import type { ExperienceEntry } from "@/lib/types";
 import { generateId, formatDate } from "@/lib/utils";
 import AdminFormField from "@/components/admin/AdminFormField";
+import SaveBar from "@/components/admin/SaveBar";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
+import { useSave } from "@/lib/useSave";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 
 const EMPTY: Omit<ExperienceEntry, "id"> = {
@@ -25,21 +27,16 @@ export default function AdminExperiencePage() {
   const [isNew, setIsNew] = useState(false);
   const [bulletsText, setBulletsText] = useState("");
   const [deleting, setDeleting] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
+  const { save, state } = useSave("experience");
 
   useEffect(() => {
     fetch("/api/content/experience").then(r => r.json()).then(setItems);
   }, []);
 
-  async function save(updated: ExperienceEntry[]) {
-    setSaving(true);
-    await fetch("/api/content/experience", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updated),
-    });
-    setItems(updated);
-    setSaving(false);
+  async function persist(updated: ExperienceEntry[]) {
+    const ok = await save(updated);
+    if (ok) setItems(updated);
+    return ok;
   }
 
   function startAdd() {
@@ -55,8 +52,8 @@ export default function AdminExperiencePage() {
   }
 
   async function handleDelete(id: string) {
-    await save(items.filter(i => i.id !== id));
-    setDeleting(null);
+    const ok = await persist(items.filter(i => i.id !== id));
+    if (ok) setDeleting(null);
   }
 
   async function handleSave(e: FormEvent) {
@@ -67,8 +64,8 @@ export default function AdminExperiencePage() {
       bullets: bulletsText.split("\n").map(b => b.trim()).filter(Boolean),
     };
     const updated = isNew ? [...items, withBullets] : items.map(i => i.id === editing.id ? withBullets : i);
-    await save(updated);
-    setEditing(null);
+    const ok = await persist(updated);
+    if (ok) setEditing(null);
   }
 
   function setField(key: keyof ExperienceEntry) {
@@ -115,10 +112,7 @@ export default function AdminExperiencePage() {
             />
             <p className="mt-1 text-xs text-muted">Each line becomes a bullet point.</p>
           </div>
-          <div className="flex gap-3 pt-2 border-t border-border">
-            <button type="submit" disabled={saving} className="btn-primary">{saving ? "Saving…" : "Save"}</button>
-            <button type="button" onClick={() => setEditing(null)} className="btn-secondary">Cancel</button>
-          </div>
+          <SaveBar state={state} />
         </form>
       )}
 
@@ -138,9 +132,7 @@ export default function AdminExperiencePage() {
             </div>
           </div>
         ))}
-        {items.length === 0 && !editing && (
-          <p className="text-muted text-sm py-6 text-center">No experience entries yet.</p>
-        )}
+        {items.length === 0 && !editing && <p className="text-muted text-sm py-6 text-center">No experience entries yet.</p>}
       </div>
 
       <ConfirmDialog

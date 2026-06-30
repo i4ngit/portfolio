@@ -4,7 +4,9 @@ import { useState, useEffect, FormEvent } from "react";
 import type { NewsPost } from "@/lib/types";
 import { generateId, formatDate } from "@/lib/utils";
 import AdminFormField from "@/components/admin/AdminFormField";
+import SaveBar from "@/components/admin/SaveBar";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
+import { useSave } from "@/lib/useSave";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 
 const EMPTY_POST: Omit<NewsPost, "id"> = {
@@ -23,21 +25,16 @@ export default function AdminNewsPage() {
   const [editing, setEditing] = useState<NewsPost | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
+  const { save, state } = useSave("news");
 
   useEffect(() => {
     fetch("/api/content/news").then(r => r.json()).then(setPosts);
   }, []);
 
-  async function save(updated: NewsPost[]) {
-    setSaving(true);
-    await fetch("/api/content/news", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updated),
-    });
-    setPosts(updated);
-    setSaving(false);
+  async function persist(updated: NewsPost[]) {
+    const ok = await save(updated);
+    if (ok) setPosts(updated);
+    return ok;
   }
 
   function startAdd() {
@@ -56,13 +53,13 @@ export default function AdminNewsPage() {
     const updated = isNew
       ? [editing, ...posts]
       : posts.map(p => p.id === editing.id ? editing : p);
-    await save(updated);
-    setEditing(null);
+    const ok = await persist(updated);
+    if (ok) setEditing(null);
   }
 
   async function handleDelete(id: string) {
-    await save(posts.filter(p => p.id !== id));
-    setDeleting(null);
+    const ok = await persist(posts.filter(p => p.id !== id));
+    if (ok) setDeleting(null);
   }
 
   function setField(key: keyof NewsPost) {
@@ -82,7 +79,6 @@ export default function AdminNewsPage() {
         )}
       </div>
 
-      {/* Edit form */}
       {editing && (
         <form onSubmit={handleSave} className="card mb-6 space-y-4">
           <div className="flex items-center justify-between mb-2">
@@ -97,16 +93,10 @@ export default function AdminNewsPage() {
             <AdminFormField label="Category" name="category" value={editing.category} onChange={setField("category")} type="select" options={CATEGORY_OPTIONS} />
           </div>
           <AdminFormField label="Content" name="content" value={editing.content} onChange={setField("content")} type="textarea" rows={6} hint="Supports Markdown." required />
-          <div className="flex gap-3 pt-2 border-t border-border">
-            <button type="submit" disabled={saving} className="btn-primary">
-              {saving ? "Saving…" : "Save Post"}
-            </button>
-            <button type="button" onClick={() => setEditing(null)} className="btn-secondary">Cancel</button>
-          </div>
+          <SaveBar state={state} label="Save Post" />
         </form>
       )}
 
-      {/* Post list */}
       <div className="space-y-3">
         {sorted.map(post => (
           <div key={post.id} className="card flex items-start justify-between gap-4">

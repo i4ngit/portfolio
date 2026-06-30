@@ -15,11 +15,21 @@ export interface ResearchProject {
   title: string;
   lab: string;
   institution: string;
-  description: string;
+  description: string;          // short summary shown on card
+  fullDescription?: string;     // expanded methods/findings (markdown)
+  findings?: string;            // 1-2 sentence key finding teaser
   period: string;
   tags: string[];
   featured: boolean;
   link?: string;
+  projectType?: "research" | "clinical" | "coursework";
+  status?: "ongoing" | "completed" | "published";
+  coverImage?: string;          // hero image URL
+  images?: string[];            // gallery image URLs
+  techniques?: string[];        // for smart recommendations
+  piName?: string;
+  piTitle?: string;
+  piQuote?: string;
 }
 
 export interface Publication {

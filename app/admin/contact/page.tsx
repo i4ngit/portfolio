@@ -2,6 +2,8 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import AdminFormField from "@/components/admin/AdminFormField";
+import SaveBar from "@/components/admin/SaveBar";
+import { useSave } from "@/lib/useSave";
 import type { ContactContent } from "@/lib/types";
 
 const EMPTY: ContactContent = {
@@ -10,8 +12,7 @@ const EMPTY: ContactContent = {
 
 export default function AdminContactPage() {
   const [data, setData] = useState<ContactContent>(EMPTY);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const { save, state } = useSave("contact");
 
   useEffect(() => {
     fetch("/api/content/contact").then(r => r.json()).then(setData);
@@ -23,15 +24,7 @@ export default function AdminContactPage() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setSaving(true);
-    await fetch("/api/content/contact", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    await save(data);
   }
 
   return (
@@ -48,12 +41,7 @@ export default function AdminContactPage() {
           <AdminFormField label="Department" name="department" value={data.department ?? ""} onChange={set("department")} />
         </div>
         <AdminFormField label="Contact Page Blurb" name="blurb" value={data.blurb ?? ""} onChange={set("blurb")} type="textarea" rows={3} hint="Short intro shown above contact links." />
-        <div className="flex items-center gap-3 pt-2 border-t border-border">
-          <button type="submit" disabled={saving} className="btn-primary">
-            {saving ? "Saving…" : "Save Changes"}
-          </button>
-          {saved && <span className="text-sm text-green-accent font-medium">Saved!</span>}
-        </div>
+        <SaveBar state={state} />
       </form>
     </div>
   );

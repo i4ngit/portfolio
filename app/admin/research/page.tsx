@@ -4,14 +4,16 @@ import { useState, useEffect, FormEvent } from "react";
 import type { ResearchProject, Publication } from "@/lib/types";
 import { generateId } from "@/lib/utils";
 import AdminFormField from "@/components/admin/AdminFormField";
+import SaveBar from "@/components/admin/SaveBar";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
+import { useSave } from "@/lib/useSave";
 import { Plus, Pencil, Trash2, X, Star } from "lucide-react";
 
-// --- Research Projects ---
-
 const EMPTY_PROJECT: Omit<ResearchProject, "id"> = {
-  title: "", lab: "", institution: "", description: "",
-  period: "", tags: [], featured: false,
+  title: "", lab: "", institution: "", description: "", fullDescription: "",
+  findings: "", period: "", tags: [], techniques: [], featured: false,
+  projectType: "research", status: "ongoing", coverImage: "", images: [],
+  piName: "", piTitle: "", piQuote: "", link: "",
 };
 
 const EMPTY_PUB: Omit<Publication, "id"> = {
@@ -26,6 +28,18 @@ const PUB_TYPE_OPTS = [
   { value: "preprint", label: "Preprint" },
 ];
 
+const PROJECT_TYPE_OPTS = [
+  { value: "research", label: "Research" },
+  { value: "clinical", label: "Clinical" },
+  { value: "coursework", label: "Coursework" },
+];
+
+const STATUS_OPTS = [
+  { value: "ongoing", label: "Ongoing" },
+  { value: "completed", label: "Completed" },
+  { value: "published", label: "Published" },
+];
+
 export default function AdminResearchPage() {
   const [projects, setProjects] = useState<ResearchProject[]>([]);
   const [pubs, setPubs] = useState<Publication[]>([]);
@@ -34,10 +48,13 @@ export default function AdminResearchPage() {
   const [isNewProject, setIsNewProject] = useState(false);
   const [isNewPub, setIsNewPub] = useState(false);
   const [tagsText, setTagsText] = useState("");
+  const [techniquesText, setTechniquesText] = useState("");
+  const [imagesText, setImagesText] = useState("");
   const [deletingProject, setDeletingProject] = useState<string | null>(null);
   const [deletingPub, setDeletingPub] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
   const [tab, setTab] = useState<"projects" | "publications">("projects");
+  const { save: saveProjects, state: projectState } = useSave("research");
+  const { save: savePubs, state: pubState } = useSave("publications");
 
   useEffect(() => {
     Promise.all([
@@ -46,40 +63,60 @@ export default function AdminResearchPage() {
     ]).then(([r, p]) => { setProjects(r); setPubs(p); });
   }, []);
 
-  async function saveProjects(updated: ResearchProject[]) {
-    setSaving(true);
-    await fetch("/api/content/research", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updated) });
-    setProjects(updated);
-    setSaving(false);
+  async function persistProjects(updated: ResearchProject[]) {
+    const ok = await saveProjects(updated);
+    if (ok) setProjects(updated);
+    return ok;
   }
 
-  async function savePubs(updated: Publication[]) {
-    setSaving(true);
-    await fetch("/api/content/publications", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updated) });
-    setPubs(updated);
-    setSaving(false);
+  async function persistPubs(updated: Publication[]) {
+    const ok = await savePubs(updated);
+    if (ok) setPubs(updated);
+    return ok;
   }
 
-  // Project handlers
-  function startAddProject() { setEditingProject({ id: generateId(), ...EMPTY_PROJECT }); setTagsText(""); setIsNewProject(true); }
-  function startEditProject(p: ResearchProject) { setEditingProject({ ...p }); setTagsText(p.tags.join(", ")); setIsNewProject(false); }
+  function startAddProject() {
+    setEditingProject({ id: generateId(), ...EMPTY_PROJECT });
+    setTagsText(""); setTechniquesText(""); setImagesText("");
+    setIsNewProject(true);
+  }
+
+  function startEditProject(p: ResearchProject) {
+    setEditingProject({ ...p });
+    setTagsText(p.tags.join(", "));
+    setTechniquesText((p.techniques ?? []).join(", "));
+    setImagesText((p.images ?? []).join("\n"));
+    setIsNewProject(false);
+  }
 
   async function handleSaveProject(e: FormEvent) {
     e.preventDefault();
     if (!editingProject) return;
-    const withTags = { ...editingProject, tags: tagsText.split(",").map(t => t.trim()).filter(Boolean) };
-    const updated = isNewProject ? [...projects, withTags] : projects.map(p => p.id === editingProject.id ? withTags : p);
-    await saveProjects(updated);
-    setEditingProject(null);
+    const withExtras = {
+      ...editingProject,
+      tags: tagsText.split(",").map(t => t.trim()).filter(Boolean),
+      techniques: techniquesText.split(",").map(t => t.trim()).filter(Boolean),
+      images: imagesText.split("\n").map(u => u.trim()).filter(Boolean),
+    };
+    const updated = isNewProject
+      ? [...projects, withExtras]
+      : projects.map(p => p.id === editingProject.id ? withExtras : p);
+    const ok = await persistProjects(updated);
+    if (ok) setEditingProject(null);
   }
 
-  async function handleDeleteProject(id: string) { await saveProjects(projects.filter(p => p.id !== id)); setDeletingProject(null); }
+  async function handleDeleteProject(id: string) {
+    const ok = await persistProjects(projects.filter(p => p.id !== id));
+    if (ok) setDeletingProject(null);
+  }
 
   function setProjectField(key: keyof ResearchProject) {
-    return (value: string) => setEditingProject(prev => prev ? { ...prev, [key]: value } : prev);
+    return (value: string) => setEditingProject(prev => prev ? {
+      ...prev,
+      [key]: key === "featured" ? value === "true" : value,
+    } : prev);
   }
 
-  // Publication handlers
   function startAddPub() { setEditingPub({ id: generateId(), ...EMPTY_PUB }); setIsNewPub(true); }
   function startEditPub(p: Publication) { setEditingPub({ ...p }); setIsNewPub(false); }
 
@@ -87,21 +124,26 @@ export default function AdminResearchPage() {
     e.preventDefault();
     if (!editingPub) return;
     const updated = isNewPub ? [...pubs, editingPub] : pubs.map(p => p.id === editingPub.id ? editingPub : p);
-    await savePubs(updated);
-    setEditingPub(null);
+    const ok = await persistPubs(updated);
+    if (ok) setEditingPub(null);
   }
 
-  async function handleDeletePub(id: string) { await savePubs(pubs.filter(p => p.id !== id)); setDeletingPub(null); }
+  async function handleDeletePub(id: string) {
+    const ok = await persistPubs(pubs.filter(p => p.id !== id));
+    if (ok) setDeletingPub(null);
+  }
 
   function setPubField(key: keyof Publication) {
-    return (value: string) => setEditingPub(prev => prev ? { ...prev, [key]: key === "year" ? parseInt(value) || 0 : value } : prev);
+    return (value: string) => setEditingPub(prev => prev ? {
+      ...prev,
+      [key]: key === "year" ? parseInt(value) || 0 : value,
+    } : prev);
   }
 
   return (
     <div>
       <h1 className="text-2xl font-bold font-serif text-slate-text mb-6">Research</h1>
 
-      {/* Tabs */}
       <div className="flex gap-1 p-1 bg-surface rounded-lg border border-border mb-6 w-fit">
         {(["projects", "publications"] as const).map(t => (
           <button key={t} onClick={() => setTab(t)}
@@ -111,7 +153,6 @@ export default function AdminResearchPage() {
         ))}
       </div>
 
-      {/* Projects tab */}
       {tab === "projects" && (
         <>
           <div className="flex justify-end mb-4">
@@ -124,26 +165,61 @@ export default function AdminResearchPage() {
                 <h2 className="font-semibold text-slate-text">{isNewProject ? "New Project" : "Edit Project"}</h2>
                 <button type="button" onClick={() => setEditingProject(null)}><X size={18} className="text-muted" /></button>
               </div>
+
               <AdminFormField label="Title" name="title" value={editingProject.title} onChange={setProjectField("title")} required />
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <AdminFormField label="Lab / Group" name="lab" value={editingProject.lab} onChange={setProjectField("lab")} required />
                 <AdminFormField label="Institution" name="institution" value={editingProject.institution} onChange={setProjectField("institution")} required />
               </div>
-              <AdminFormField label="Description" name="description" value={editingProject.description} onChange={setProjectField("description")} type="textarea" rows={4} required />
-              <div className="grid sm:grid-cols-2 gap-4">
+
+              <div className="grid sm:grid-cols-3 gap-4">
+                <AdminFormField label="Type" name="projectType" value={editingProject.projectType ?? "research"} onChange={setProjectField("projectType")} type="select" options={PROJECT_TYPE_OPTS} />
+                <AdminFormField label="Status" name="status" value={editingProject.status ?? "ongoing"} onChange={setProjectField("status")} type="select" options={STATUS_OPTS} />
                 <AdminFormField label="Period" name="period" value={editingProject.period} onChange={setProjectField("period")} placeholder="2024 – Present" required />
-                <AdminFormField label="Tags (comma-separated)" name="tags" value={tagsText} onChange={setTagsText} placeholder="Neuroscience, fMRI, TBI" />
               </div>
+
+              <AdminFormField label="Summary (shown on card)" name="description" value={editingProject.description} onChange={setProjectField("description")} type="textarea" rows={3} required />
+              <AdminFormField label="Key Finding (1–2 sentences)" name="findings" value={editingProject.findings ?? ""} onChange={setProjectField("findings")} type="textarea" rows={2} hint="Shown as a highlighted teaser on the card and in the modal." />
+              <AdminFormField label="Full Methods & Findings (Markdown)" name="fullDescription" value={editingProject.fullDescription ?? ""} onChange={setProjectField("fullDescription")} type="textarea" rows={8} hint="Use ## headings for Background, Methods, Findings sections." />
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <AdminFormField label="Tags (comma-separated)" name="tags" value={tagsText} onChange={setTagsText} placeholder="Neuroscience, TBI, SDOH" />
+                <AdminFormField label="Techniques (comma-separated)" name="techniques" value={techniquesText} onChange={setTechniquesText} placeholder="ELISA, Chart Review, R" hint="Used for smart recommendations." />
+              </div>
+
+              <AdminFormField label="Cover Image URL" name="coverImage" value={editingProject.coverImage ?? ""} onChange={setProjectField("coverImage")} hint="Optional hero image shown at top of card. Use /public path or external URL." />
+              <div>
+                <label className="admin-label">Gallery Image URLs</label>
+                <textarea
+                  value={imagesText}
+                  onChange={e => setImagesText(e.target.value)}
+                  rows={3}
+                  className="admin-input resize-y"
+                  placeholder="One image URL per line (figures, diagrams, posters)"
+                />
+                <p className="mt-1 text-xs text-muted">Each line becomes a figure thumbnail in the project modal.</p>
+              </div>
+
+              <div className="border-t border-border pt-4 space-y-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted">PI / Mentor</p>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <AdminFormField label="PI Name" name="piName" value={editingProject.piName ?? ""} onChange={setProjectField("piName")} placeholder="Dr. Jane Smith, MD PhD" />
+                  <AdminFormField label="PI Title" name="piTitle" value={editingProject.piTitle ?? ""} onChange={setProjectField("piTitle")} placeholder="Associate Professor of Neurology" />
+                </div>
+                <AdminFormField label="PI Quote (optional)" name="piQuote" value={editingProject.piQuote ?? ""} onChange={setProjectField("piQuote")} type="textarea" rows={3} hint="A brief endorsement or description of your contributions." />
+              </div>
+
+              <AdminFormField label="External Link (optional)" name="link" value={editingProject.link ?? ""} onChange={setProjectField("link")} type="url" />
+
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="featured" checked={editingProject.featured}
                   onChange={e => setEditingProject(prev => prev ? { ...prev, featured: e.target.checked } : prev)}
                   className="rounded border-border text-navy focus:ring-navy" />
-                <label htmlFor="featured" className="text-sm text-slate-text">Featured project (shown prominently)</label>
+                <label htmlFor="featured" className="text-sm text-slate-text">Featured project (shown prominently at top)</label>
               </div>
-              <div className="flex gap-3 pt-2 border-t border-border">
-                <button type="submit" disabled={saving} className="btn-primary">{saving ? "Saving…" : "Save"}</button>
-                <button type="button" onClick={() => setEditingProject(null)} className="btn-secondary">Cancel</button>
-              </div>
+
+              <SaveBar state={projectState} />
             </form>
           )}
 
@@ -156,7 +232,7 @@ export default function AdminResearchPage() {
                     {p.featured && <Star size={12} className="text-amber-500 fill-amber-500" />}
                   </div>
                   <p className="text-xs text-navy mt-0.5">{p.lab} · {p.institution}</p>
-                  <p className="text-xs text-muted mt-0.5">{p.period} · {p.tags.join(", ")}</p>
+                  <p className="text-xs text-muted mt-0.5">{p.period} · {p.projectType ?? "research"} · {p.status ?? "—"}</p>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
                   <button onClick={() => startEditProject(p)} className="p-1.5 text-muted hover:text-navy"><Pencil size={15} /></button>
@@ -164,9 +240,7 @@ export default function AdminResearchPage() {
                 </div>
               </div>
             ))}
-            {projects.length === 0 && !editingProject && (
-              <p className="text-muted text-sm py-6 text-center">No projects yet.</p>
-            )}
+            {projects.length === 0 && !editingProject && <p className="text-muted text-sm py-6 text-center">No projects yet.</p>}
           </div>
 
           <ConfirmDialog open={deletingProject !== null} title="Delete Project"
@@ -176,7 +250,6 @@ export default function AdminResearchPage() {
         </>
       )}
 
-      {/* Publications tab */}
       {tab === "publications" && (
         <>
           <div className="flex justify-end mb-4">
@@ -201,10 +274,7 @@ export default function AdminResearchPage() {
                 <AdminFormField label="Link (optional)" name="link" value={editingPub.link ?? ""} onChange={setPubField("link")} type="url" />
               </div>
               <AdminFormField label="Abstract (optional)" name="abstract" value={editingPub.abstract ?? ""} onChange={setPubField("abstract")} type="textarea" rows={3} />
-              <div className="flex gap-3 pt-2 border-t border-border">
-                <button type="submit" disabled={saving} className="btn-primary">{saving ? "Saving…" : "Save"}</button>
-                <button type="button" onClick={() => setEditingPub(null)} className="btn-secondary">Cancel</button>
-              </div>
+              <SaveBar state={pubState} />
             </form>
           )}
 
@@ -222,9 +292,7 @@ export default function AdminResearchPage() {
                 </div>
               </div>
             ))}
-            {pubs.length === 0 && !editingPub && (
-              <p className="text-muted text-sm py-6 text-center">No publications yet.</p>
-            )}
+            {pubs.length === 0 && !editingPub && <p className="text-muted text-sm py-6 text-center">No publications yet.</p>}
           </div>
 
           <ConfirmDialog open={deletingPub !== null} title="Delete Publication"

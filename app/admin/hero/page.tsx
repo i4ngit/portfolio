@@ -2,6 +2,8 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import AdminFormField from "@/components/admin/AdminFormField";
+import SaveBar from "@/components/admin/SaveBar";
+import { useSave } from "@/lib/useSave";
 import type { HeroContent } from "@/lib/types";
 
 const EMPTY: HeroContent = {
@@ -11,8 +13,7 @@ const EMPTY: HeroContent = {
 
 export default function AdminHeroPage() {
   const [data, setData] = useState<HeroContent>(EMPTY);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const { save, state } = useSave("hero");
 
   useEffect(() => {
     fetch("/api/content/hero").then(r => r.json()).then(setData);
@@ -24,15 +25,7 @@ export default function AdminHeroPage() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setSaving(true);
-    await fetch("/api/content/hero", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    await save(data);
   }
 
   return (
@@ -53,15 +46,10 @@ export default function AdminHeroPage() {
           <AdminFormField label="LinkedIn URL" name="linkedIn" value={data.linkedIn} onChange={set("linkedIn")} type="url" />
         </div>
         <div className="grid sm:grid-cols-2 gap-5">
-          <AdminFormField label="Photo URL" name="photoUrl" value={data.photoUrl} onChange={set("photoUrl")} hint="Paste a direct image URL or upload to /public and use /your-photo.jpg" />
+          <AdminFormField label="Photo URL" name="photoUrl" value={data.photoUrl} onChange={set("photoUrl")} hint="Upload to /public and use /your-photo.jpg, or paste an external URL." />
           <AdminFormField label="CV URL" name="cvUrl" value={data.cvUrl} onChange={set("cvUrl")} hint="Upload CV to /public and use /my-cv.pdf, or paste an external link." />
         </div>
-        <div className="flex items-center gap-3 pt-2 border-t border-border">
-          <button type="submit" disabled={saving} className="btn-primary">
-            {saving ? "Saving…" : "Save Changes"}
-          </button>
-          {saved && <span className="text-sm text-green-accent font-medium">Saved!</span>}
-        </div>
+        <SaveBar state={state} />
       </form>
     </div>
   );
