@@ -64,13 +64,11 @@ export default async function HomePage() {
         <div className="page-column pb-24">
 
         {/* News */}
-        {sortedNews.length > 0 && (
-          <section className="section-block" id="news">
-            <p className="section-label">News</p>
-            <h2 className="section-heading">Recent updates</h2>
-            <NewsList posts={sortedNews} showFilter={false} />
-          </section>
-        )}
+        <section className="section-block" id="news">
+          <p className="section-label">News</p>
+          <h2 className="section-heading">Recent updates</h2>
+          <NewsList posts={sortedNews} showFilter={false} />
+        </section>
 
         {/* Research Projects */}
         {research.length > 0 && (
