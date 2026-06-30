@@ -275,3 +275,21 @@ export async function getContact(): Promise<ContactContent> {
 export async function setContact(data: ContactContent): Promise<void> {
   return kvSet("contact", data);
 }
+
+// Photo storage — stores resized base64 data URLs, served via /api/photo/[name]
+
+export async function getPhoto(name: string): Promise<string | null> {
+  if (!process.env.UPSTASH_REDIS_REST_URL) return null;
+  try {
+    return await kv.get<string>(`photo:${name}`);
+  } catch {
+    return null;
+  }
+}
+
+export async function setPhoto(name: string, dataUrl: string): Promise<void> {
+  if (!process.env.UPSTASH_REDIS_REST_URL) {
+    throw new Error("REDIS_NOT_CONFIGURED");
+  }
+  await kv.set(`photo:${name}`, dataUrl);
+}

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { HeroContent } from "@/lib/types";
 import { Mail, Linkedin, FileText } from "lucide-react";
 
@@ -13,13 +12,11 @@ export default function Hero({ hero }: HeroProps) {
         {/* Photo */}
         <div className="flex-shrink-0">
           <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gray-100 ring-1 ring-gray-200">
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={hero.photoUrl}
               alt={hero.name}
-              width={112}
-              height={112}
               className="w-full h-full object-cover"
-              priority
             />
           </div>
         </div>
