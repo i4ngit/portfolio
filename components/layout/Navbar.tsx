@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "/#publications", label: "Publications" },
   { href: "/#experience", label: "Experience" },
   { href: "/#contact", label: "Contact" },
+  { href: "/off-the-clock", label: "Off the Clock" },
 ];
 
 export default function Navbar() {

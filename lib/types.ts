@@ -72,6 +72,15 @@ export interface NewsPost {
   category: "award" | "research" | "clinical" | "general";
 }
 
+export interface HobbyCategory {
+  id: string;
+  name: string;          // "Photography"
+  slug: string;           // "photography" — used in the URL
+  tagline?: string;       // short description shown under the heading
+  coverImage?: string;    // thumbnail shown on the hub page
+  images: string[];       // gallery photos
+}
+
 export interface ContactContent {
   email: string;
   linkedin: string;
@@ -88,4 +97,5 @@ export type ContentSection =
   | "experience"
   | "milestones"
   | "news"
-  | "contact";
+  | "contact"
+  | "hobbies";

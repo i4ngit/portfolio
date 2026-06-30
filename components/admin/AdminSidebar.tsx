@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   LogOut,
   ExternalLink,
+  Camera,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +23,7 @@ const NAV = [
   { href: "/admin/experience", label: "Experience", icon: Clock },
   { href: "/admin/milestones", label: "Milestones", icon: Trophy },
   { href: "/admin/news", label: "News", icon: Newspaper },
+  { href: "/admin/hobbies", label: "Off the Clock", icon: Camera },
   { href: "/admin/contact", label: "Contact", icon: Mail },
 ];
 

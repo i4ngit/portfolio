@@ -19,6 +19,7 @@ import type {
   Milestone,
   NewsPost,
   ContactContent,
+  HobbyCategory,
 } from "./types";
 
 // Default/seed content shown before real content is saved
@@ -204,6 +205,8 @@ const DEFAULTS = {
     blurb:
       "I am always happy to connect with fellow researchers, clinicians, and mentors. Feel free to reach out about research collaborations, shadowing opportunities, or general inquiries.",
   } satisfies ContactContent,
+
+  hobbies: [] satisfies HobbyCategory[],
 };
 
 // Generic typed get/set helpers
@@ -285,6 +288,14 @@ export async function getContact(): Promise<ContactContent> {
 
 export async function setContact(data: ContactContent): Promise<void> {
   return kvSet("contact", data);
+}
+
+export async function getHobbies(): Promise<HobbyCategory[]> {
+  return kvGet("hobbies", DEFAULTS.hobbies);
+}
+
+export async function setHobbies(data: HobbyCategory[]): Promise<void> {
+  return kvSet("hobbies", data);
 }
 
 // Photo storage — stores resized base64 data URLs, served via /api/photo/[name]

@@ -8,6 +8,7 @@ import {
   getMilestones, setMilestones,
   getNews, setNews,
   getContact, setContact,
+  getHobbies, setHobbies,
 } from "@/lib/kv";
 
 type Params = Promise<{ section: string }>;
@@ -20,6 +21,7 @@ const GETTERS: Record<string, () => Promise<unknown>> = {
   milestones: getMilestones,
   news: getNews,
   contact: getContact,
+  hobbies: getHobbies,
 };
 
 const SETTERS: Record<string, (data: unknown) => Promise<void>> = {
@@ -30,6 +32,7 @@ const SETTERS: Record<string, (data: unknown) => Promise<void>> = {
   milestones: (d) => setMilestones(d as Parameters<typeof setMilestones>[0]),
   news: (d) => setNews(d as Parameters<typeof setNews>[0]),
   contact: (d) => setContact(d as Parameters<typeof setContact>[0]),
+  hobbies: (d) => setHobbies(d as Parameters<typeof setHobbies>[0]),
 };
 
 export async function GET(_req: Request, { params }: { params: Params }) {
