@@ -9,7 +9,8 @@ export default async function ContactPage() {
   const contact = await getContact();
 
   return (
-    <div className="page-column py-12">
+    <div className="wide-column py-12">
+    <div className="page-column">
       <h1
         className="text-xl font-bold text-gray-900 mb-8"
         style={{ fontFamily: "var(--font-merriweather), Georgia, serif" }}
@@ -67,6 +68,7 @@ export default async function ContactPage() {
           </p>
         )}
       </div>
+    </div>
     </div>
   );
 }

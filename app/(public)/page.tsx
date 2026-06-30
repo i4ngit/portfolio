@@ -62,10 +62,9 @@ export default async function HomePage() {
       {/* ── Hero ─────────────────────────────────────────── */}
       <div className="wide-column">
         <Hero hero={hero} />
-      </div>
 
-      {/* ── Content sections: narrow column ──────────────── */}
-      <div className="page-column pb-24">
+        {/* ── Content sections: narrow column, aligned to hero ── */}
+        <div className="page-column pb-24">
 
         {/* News */}
         {sortedNews.length > 0 && (
@@ -180,6 +179,7 @@ export default async function HomePage() {
           </div>
         </section>
 
+        </div>
       </div>
     </>
   );

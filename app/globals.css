@@ -22,9 +22,9 @@
     @apply max-w-5xl mx-auto px-6 sm:px-10;
   }
 
-  /* Narrow column: text sections */
+  /* Narrow column: text sections — nested inside .wide-column so left edges align with nav/hero */
   .page-column {
-    @apply max-w-2xl mx-auto px-5 sm:px-8;
+    @apply max-w-2xl;
   }
 
   .section-block {

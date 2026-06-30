@@ -16,7 +16,8 @@ export default async function ResearchPage() {
   const sortedPubs = [...publications].sort((a, b) => b.year - a.year);
 
   return (
-    <div className="page-column py-14 pb-24">
+    <div className="wide-column py-14 pb-24">
+    <div className="page-column">
       {research.length > 0 && (
         <section id="research">
           <p className="section-label">Research</p>
@@ -38,6 +39,7 @@ export default async function ResearchPage() {
       {research.length === 0 && sortedPubs.length === 0 && (
         <p className="text-sm text-gray-400 py-8">No research entries yet.</p>
       )}
+    </div>
     </div>
   );
 }
