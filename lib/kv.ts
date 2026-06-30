@@ -1,9 +1,16 @@
 import { Redis } from "@upstash/redis";
 
-const kv = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL ?? "",
-  token: process.env.UPSTASH_REDIS_REST_TOKEN ?? "",
-});
+// Accept both Upstash-native and Vercel KV env var names
+const REDIS_URL =
+  process.env.UPSTASH_REDIS_REST_URL ||
+  process.env.KV_REST_API_URL ||
+  "";
+const REDIS_TOKEN =
+  process.env.UPSTASH_REDIS_REST_TOKEN ||
+  process.env.KV_REST_API_TOKEN ||
+  "";
+
+const kv = new Redis({ url: REDIS_URL, token: REDIS_TOKEN });
 import type {
   HeroContent,
   ResearchProject,
@@ -201,8 +208,12 @@ const DEFAULTS = {
 
 // Generic typed get/set helpers
 
+function isRedisConfigured(): boolean {
+  return !!(process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL);
+}
+
 async function kvGet<T>(key: string, fallback: T): Promise<T> {
-  if (!process.env.UPSTASH_REDIS_REST_URL) return fallback;
+  if (!isRedisConfigured()) return fallback;
   try {
     const value = await kv.get<T>(key);
     return value ?? fallback;
@@ -212,7 +223,7 @@ async function kvGet<T>(key: string, fallback: T): Promise<T> {
 }
 
 async function kvSet<T>(key: string, value: T): Promise<void> {
-  if (!process.env.UPSTASH_REDIS_REST_URL) {
+  if (!isRedisConfigured()) {
     throw new Error("REDIS_NOT_CONFIGURED");
   }
   await kv.set(key, value);
@@ -279,7 +290,7 @@ export async function setContact(data: ContactContent): Promise<void> {
 // Photo storage — stores resized base64 data URLs, served via /api/photo/[name]
 
 export async function getPhoto(name: string): Promise<string | null> {
-  if (!process.env.UPSTASH_REDIS_REST_URL) return null;
+  if (!isRedisConfigured()) return null;
   try {
     return await kv.get<string>(`photo:${name}`);
   } catch {
@@ -288,7 +299,7 @@ export async function getPhoto(name: string): Promise<string | null> {
 }
 
 export async function setPhoto(name: string, dataUrl: string): Promise<void> {
-  if (!process.env.UPSTASH_REDIS_REST_URL) {
+  if (!isRedisConfigured()) {
     throw new Error("REDIS_NOT_CONFIGURED");
   }
   await kv.set(`photo:${name}`, dataUrl);
