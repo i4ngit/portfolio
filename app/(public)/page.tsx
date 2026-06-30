@@ -73,9 +73,7 @@ export default async function HomePage() {
         {sortedNews.length > 0 && (
           <section className="section-block" id="news">
             <p className="section-label">News</p>
-            <h2 className="font-display font-bold text-3xl text-gray-900 mb-6">
-              Recent updates
-            </h2>
+            <h2 className="section-heading">Recent updates</h2>
             <NewsList posts={sortedNews} showFilter={false} />
           </section>
         )}
@@ -84,6 +82,7 @@ export default async function HomePage() {
         {remainingBio.length > 0 && (
           <section className="section-block" id="about">
             <p className="section-label">About</p>
+            <h2 className="section-heading">More about me</h2>
             <div className="space-y-4">
               {remainingBio.map((para, i) => (
                 <p key={i} className="text-sm text-gray-600 leading-relaxed">
@@ -98,6 +97,7 @@ export default async function HomePage() {
         {research.length > 0 && (
           <section className="section-block" id="research">
             <p className="section-label">Research</p>
+            <h2 className="section-heading">Selected research</h2>
             <ResearchFilters projects={research} tags={allTags} showFilters={false} />
           </section>
         )}
@@ -106,6 +106,7 @@ export default async function HomePage() {
         {sortedPubs.length > 0 && (
           <section className="section-block" id="publications">
             <p className="section-label">Publications</p>
+            <h2 className="section-heading">Selected work</h2>
             <div>
               {sortedPubs.map((pub, i) => (
                 <PublicationCitation key={pub.id} pub={pub} index={i + 1} />
@@ -118,6 +119,7 @@ export default async function HomePage() {
         {sortedExp.length > 0 && (
           <section className="section-block" id="experience">
             <p className="section-label">Experience</p>
+            <h2 className="section-heading">Where I&apos;ve worked</h2>
             <div>
               {sortedExp.map((entry) => (
                 <TimelineEntry key={entry.id} entry={entry} />
@@ -130,6 +132,7 @@ export default async function HomePage() {
         {milestones.length > 0 && (
           <section className="section-block" id="milestones">
             <p className="section-label">Milestones</p>
+            <h2 className="section-heading">Path so far</h2>
             <div className="space-y-8">
               {milestonesByCategory.map(({ cat, label, items }) => (
                 <div key={cat}>
@@ -148,6 +151,7 @@ export default async function HomePage() {
         {/* Contact */}
         <section className="section-block" id="contact">
           <p className="section-label">Contact</p>
+          <h2 className="section-heading">Let&apos;s connect</h2>
           <p className="text-sm text-gray-600 leading-relaxed max-w-md mb-5">
             {contact.blurb ??
               "I'm always happy to connect about research opportunities, clinical experiences, or questions about my work. Feel free to reach out."}

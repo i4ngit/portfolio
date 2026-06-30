@@ -11,12 +11,8 @@ export default async function ContactPage() {
   return (
     <div className="wide-column py-12">
     <div className="page-column">
-      <h1
-        className="text-xl font-bold text-gray-900 mb-8"
-        style={{ fontFamily: "var(--font-merriweather), Georgia, serif" }}
-      >
-        Contact
-      </h1>
+      <p className="section-label">Contact</p>
+      <h1 className="section-heading">Let&apos;s connect</h1>
 
       <p className="text-sm text-gray-600 leading-relaxed max-w-md mb-8">
         {contact.blurb ||

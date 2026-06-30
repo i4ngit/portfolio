@@ -35,6 +35,10 @@
     @apply text-xs font-semibold uppercase tracking-[0.15em] text-gray-400 mb-5;
   }
 
+  .section-heading {
+    @apply font-display font-bold text-3xl text-gray-900 mb-6;
+  }
+
   /* ── Hero elements (William-inspired) ─────────────────── */
 
   .icon-link {

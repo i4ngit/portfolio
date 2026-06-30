@@ -24,12 +24,8 @@ export default async function MilestonesPage() {
   return (
     <div className="wide-column py-12">
     <div className="page-column">
-      <h1
-        className="text-xl font-bold text-gray-900 mb-8"
-        style={{ fontFamily: "var(--font-merriweather), Georgia, serif" }}
-      >
-        Milestones
-      </h1>
+      <p className="section-label">Milestones</p>
+      <h1 className="section-heading">Path so far</h1>
 
       {milestones.length > 0 ? (
         <div className="space-y-10">

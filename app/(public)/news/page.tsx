@@ -15,14 +15,8 @@ export default async function NewsPage() {
   return (
     <div className="wide-column py-12">
     <div className="page-column">
-      <h1
-        className="text-xl font-bold text-gray-900 mb-8"
-        style={{ fontFamily: "var(--font-merriweather), Georgia, serif" }}
-      >
-        News & Updates
-      </h1>
-
-      <p className="section-label">Recent updates</p>
+      <p className="section-label">News</p>
+      <h1 className="section-heading">Recent updates</h1>
       <NewsList posts={sorted} showFilter={true} />
     </div>
     </div>

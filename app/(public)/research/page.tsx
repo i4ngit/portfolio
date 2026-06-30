@@ -21,6 +21,7 @@ export default async function ResearchPage() {
       {research.length > 0 && (
         <section id="research">
           <p className="section-label">Research</p>
+          <h2 className="section-heading">Selected research</h2>
           <ResearchFilters projects={research} tags={allTags} showFilters={true} />
         </section>
       )}
@@ -28,6 +29,7 @@ export default async function ResearchPage() {
       {sortedPubs.length > 0 && (
         <section className={research.length > 0 ? "section-block" : ""} id="publications">
           <p className="section-label">Publications</p>
+          <h2 className="section-heading">Selected work</h2>
           <div>
             {sortedPubs.map((pub, i) => (
               <PublicationCitation key={pub.id} pub={pub} index={i + 1} />

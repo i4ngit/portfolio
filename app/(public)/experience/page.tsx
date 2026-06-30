@@ -17,14 +17,8 @@ export default async function ExperiencePage() {
   return (
     <div className="wide-column py-12">
     <div className="page-column">
-      <h1
-        className="text-xl font-bold text-gray-900 mb-8"
-        style={{ fontFamily: "var(--font-merriweather), Georgia, serif" }}
-      >
-        Experience
-      </h1>
-
-      <p className="section-label">Clinical & Research Experience</p>
+      <p className="section-label">Experience</p>
+      <h1 className="section-heading">Where I&apos;ve worked</h1>
 
       {sorted.length > 0 ? (
         <div>
