@@ -27,8 +27,8 @@ const CAT_OPTS = [
 ];
 
 const STATUS_ICON = {
-  completed: <CheckCircle2 size={14} className="text-green-accent" />,
-  "in-progress": <Clock size={14} className="text-amber-600" />,
+  completed: <CheckCircle2 size={14} className="text-gray-500" />,
+  "in-progress": <Clock size={14} className="text-gray-400" />,
   upcoming: <Circle size={14} className="text-muted" />,
 };
 
@@ -72,14 +72,14 @@ export default function AdminMilestonesPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold font-serif text-slate-text">Milestones</h1>
+        <h1 className="text-2xl font-bold font-display text-gray-900">Milestones</h1>
         {!editing && <button onClick={startAdd} className="btn-primary"><Plus size={16} /> Add Milestone</button>}
       </div>
 
       {editing && (
         <form onSubmit={handleSave} className="card mb-6 space-y-4">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="font-semibold text-slate-text">{isNew ? "New Milestone" : "Edit Milestone"}</h2>
+            <h2 className="font-semibold text-gray-900">{isNew ? "New Milestone" : "Edit Milestone"}</h2>
             <button type="button" onClick={() => setEditing(null)}><X size={18} className="text-muted" /></button>
           </div>
           <AdminFormField label="Title" name="title" value={editing.title} onChange={setField("title")} required />
@@ -98,11 +98,11 @@ export default function AdminMilestonesPage() {
           <div key={m.id} className="card flex items-center gap-4">
             {STATUS_ICON[m.status]}
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-slate-text text-sm">{m.title}</p>
+              <p className="font-medium text-gray-900 text-sm">{m.title}</p>
               <p className="text-xs text-muted mt-0.5">{m.date} · {m.category}</p>
             </div>
             <div className="flex gap-2 flex-shrink-0">
-              <button onClick={() => startEdit(m)} className="p-1.5 text-muted hover:text-navy"><Pencil size={15} /></button>
+              <button onClick={() => startEdit(m)} className="p-1.5 text-muted hover:text-gray-900"><Pencil size={15} /></button>
               <button onClick={() => setDeleting(m.id)} className="p-1.5 text-muted hover:text-red-600"><Trash2 size={15} /></button>
             </div>
           </div>

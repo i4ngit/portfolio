@@ -81,14 +81,14 @@ export default function AdminExperiencePage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold font-serif text-slate-text">Experience</h1>
+        <h1 className="text-2xl font-bold font-display text-gray-900">Experience</h1>
         {!editing && <button onClick={startAdd} className="btn-primary"><Plus size={16} /> Add Entry</button>}
       </div>
 
       {editing && (
         <form onSubmit={handleSave} className="card mb-6 space-y-4">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="font-semibold text-slate-text">{isNew ? "New Entry" : "Edit Entry"}</h2>
+            <h2 className="font-semibold text-gray-900">{isNew ? "New Entry" : "Edit Entry"}</h2>
             <button type="button" onClick={() => setEditing(null)}><X size={18} className="text-muted" /></button>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -120,14 +120,14 @@ export default function AdminExperiencePage() {
         {sorted.map(entry => (
           <div key={entry.id} className="card flex items-start gap-4">
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-slate-text text-sm">{entry.role}</p>
-              <p className="text-xs text-navy mt-0.5">{entry.organization}</p>
+              <p className="font-medium text-gray-900 text-sm">{entry.role}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{entry.organization}</p>
               <p className="text-xs text-muted mt-0.5">
                 {formatDate(entry.startDate)} – {formatDate(entry.endDate)} · {entry.type}
               </p>
             </div>
             <div className="flex gap-2 flex-shrink-0">
-              <button onClick={() => startEdit(entry)} className="p-1.5 text-muted hover:text-navy"><Pencil size={15} /></button>
+              <button onClick={() => startEdit(entry)} className="p-1.5 text-muted hover:text-gray-900"><Pencil size={15} /></button>
               <button onClick={() => setDeleting(entry.id)} className="p-1.5 text-muted hover:text-red-600"><Trash2 size={15} /></button>
             </div>
           </div>

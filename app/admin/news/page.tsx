@@ -71,7 +71,7 @@ export default function AdminNewsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold font-serif text-slate-text">News & Updates</h1>
+        <h1 className="text-2xl font-bold font-display text-gray-900">News & Updates</h1>
         {!editing && (
           <button onClick={startAdd} className="btn-primary">
             <Plus size={16} /> Add Post
@@ -82,8 +82,8 @@ export default function AdminNewsPage() {
       {editing && (
         <form onSubmit={handleSave} className="card mb-6 space-y-4">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="font-semibold text-slate-text">{isNew ? "New Post" : "Edit Post"}</h2>
-            <button type="button" onClick={() => setEditing(null)} className="text-muted hover:text-slate-text">
+            <h2 className="font-semibold text-gray-900">{isNew ? "New Post" : "Edit Post"}</h2>
+            <button type="button" onClick={() => setEditing(null)} className="text-muted hover:text-gray-900">
               <X size={18} />
             </button>
           </div>
@@ -101,11 +101,11 @@ export default function AdminNewsPage() {
         {sorted.map(post => (
           <div key={post.id} className="card flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-slate-text text-sm">{post.title}</p>
+              <p className="font-medium text-gray-900 text-sm">{post.title}</p>
               <p className="text-xs text-muted mt-0.5">{formatDate(post.date)} · {post.category}</p>
             </div>
             <div className="flex gap-2 flex-shrink-0">
-              <button onClick={() => startEdit(post)} className="p-1.5 text-muted hover:text-navy transition-colors" aria-label="Edit">
+              <button onClick={() => startEdit(post)} className="p-1.5 text-muted hover:text-gray-900 transition-colors" aria-label="Edit">
                 <Pencil size={15} />
               </button>
               <button onClick={() => setDeleting(post.id)} className="p-1.5 text-muted hover:text-red-600 transition-colors" aria-label="Delete">

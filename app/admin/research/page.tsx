@@ -142,12 +142,12 @@ export default function AdminResearchPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold font-serif text-slate-text mb-6">Research</h1>
+      <h1 className="text-2xl font-bold font-display text-gray-900 mb-6">Research</h1>
 
       <div className="flex gap-1 p-1 bg-surface rounded-lg border border-border mb-6 w-fit">
         {(["projects", "publications"] as const).map(t => (
           <button key={t} onClick={() => setTab(t)}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors capitalize ${tab === t ? "bg-white shadow-sm text-slate-text" : "text-muted hover:text-slate-text"}`}>
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors capitalize ${tab === t ? "bg-white shadow-sm text-gray-900" : "text-muted hover:text-gray-900"}`}>
             {t}
           </button>
         ))}
@@ -162,7 +162,7 @@ export default function AdminResearchPage() {
           {editingProject && (
             <form onSubmit={handleSaveProject} className="card mb-6 space-y-4">
               <div className="flex items-center justify-between mb-2">
-                <h2 className="font-semibold text-slate-text">{isNewProject ? "New Project" : "Edit Project"}</h2>
+                <h2 className="font-semibold text-gray-900">{isNewProject ? "New Project" : "Edit Project"}</h2>
                 <button type="button" onClick={() => setEditingProject(null)}><X size={18} className="text-muted" /></button>
               </div>
 
@@ -215,8 +215,8 @@ export default function AdminResearchPage() {
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="featured" checked={editingProject.featured}
                   onChange={e => setEditingProject(prev => prev ? { ...prev, featured: e.target.checked } : prev)}
-                  className="rounded border-border text-navy focus:ring-navy" />
-                <label htmlFor="featured" className="text-sm text-slate-text">Featured project (shown prominently at top)</label>
+                  className="rounded border-border text-gray-900 focus:ring-gray-900" />
+                <label htmlFor="featured" className="text-sm text-gray-900">Featured project (shown prominently at top)</label>
               </div>
 
               <SaveBar state={projectState} />
@@ -228,14 +228,14 @@ export default function AdminResearchPage() {
               <div key={p.id} className="card flex items-start gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-medium text-slate-text text-sm">{p.title}</p>
+                    <p className="font-medium text-gray-900 text-sm">{p.title}</p>
                     {p.featured && <Star size={12} className="text-amber-500 fill-amber-500" />}
                   </div>
-                  <p className="text-xs text-navy mt-0.5">{p.lab} · {p.institution}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{p.lab} · {p.institution}</p>
                   <p className="text-xs text-muted mt-0.5">{p.period} · {p.projectType ?? "research"} · {p.status ?? "—"}</p>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
-                  <button onClick={() => startEditProject(p)} className="p-1.5 text-muted hover:text-navy"><Pencil size={15} /></button>
+                  <button onClick={() => startEditProject(p)} className="p-1.5 text-muted hover:text-gray-900"><Pencil size={15} /></button>
                   <button onClick={() => setDeletingProject(p.id)} className="p-1.5 text-muted hover:text-red-600"><Trash2 size={15} /></button>
                 </div>
               </div>
@@ -259,7 +259,7 @@ export default function AdminResearchPage() {
           {editingPub && (
             <form onSubmit={handleSavePub} className="card mb-6 space-y-4">
               <div className="flex items-center justify-between mb-2">
-                <h2 className="font-semibold text-slate-text">{isNewPub ? "New Publication" : "Edit Publication"}</h2>
+                <h2 className="font-semibold text-gray-900">{isNewPub ? "New Publication" : "Edit Publication"}</h2>
                 <button type="button" onClick={() => setEditingPub(null)}><X size={18} className="text-muted" /></button>
               </div>
               <AdminFormField label="Title" name="title" value={editingPub.title} onChange={setPubField("title")} required />
@@ -282,12 +282,12 @@ export default function AdminResearchPage() {
             {[...pubs].sort((a, b) => b.year - a.year).map(p => (
               <div key={p.id} className="card flex items-start gap-4">
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-slate-text text-sm">{p.title}</p>
+                  <p className="font-medium text-gray-900 text-sm">{p.title}</p>
                   <p className="text-xs text-muted mt-0.5">{p.authors}</p>
-                  <p className="text-xs text-navy mt-0.5">{p.journal}, {p.year} · {p.type}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{p.journal}, {p.year} · {p.type}</p>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
-                  <button onClick={() => startEditPub(p)} className="p-1.5 text-muted hover:text-navy"><Pencil size={15} /></button>
+                  <button onClick={() => startEditPub(p)} className="p-1.5 text-muted hover:text-gray-900"><Pencil size={15} /></button>
                   <button onClick={() => setDeletingPub(p.id)} className="p-1.5 text-muted hover:text-red-600"><Trash2 size={15} /></button>
                 </div>
               </div>

@@ -32,7 +32,7 @@ export default function AdminHeroPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold font-serif text-slate-text mb-6">About / Hero</h1>
+      <h1 className="text-2xl font-bold font-display text-gray-900 mb-6">About / Hero</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
 
         {/* Photo upload */}

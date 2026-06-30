@@ -39,7 +39,7 @@ export default function LoginPage() {
           <div className="inline-flex w-14 h-14 rounded-full bg-slate-text items-center justify-center mb-4">
             <Lock size={24} className="text-white" />
           </div>
-          <h1 className="font-serif text-2xl font-bold text-slate-text">Admin Access</h1>
+          <h1 className="font-display text-2xl font-bold text-gray-900">Admin Access</h1>
           <p className="text-muted text-sm mt-1">Ian Ocampo · Portfolio</p>
         </div>
 
@@ -76,7 +76,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-xs text-muted mt-6">
-          <Link href="/" className="hover:text-navy transition-colors">← Back to site</Link>
+          <Link href="/" className="hover:text-gray-900 transition-colors">← Back to site</Link>
         </p>
       </div>
     </div>

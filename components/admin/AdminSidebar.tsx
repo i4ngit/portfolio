@@ -41,7 +41,7 @@ export default function AdminSidebar() {
     <aside className="w-56 flex-shrink-0 bg-slate-text min-h-screen flex flex-col">
       {/* Logo */}
       <div className="px-5 py-5 border-b border-white/10">
-        <p className="font-serif text-white font-bold text-base">Ian Ocampo</p>
+        <p className="font-display text-white font-bold text-base">Ian Ocampo</p>
         <p className="text-white/40 text-xs mt-0.5">Portfolio Admin</p>
       </div>
 

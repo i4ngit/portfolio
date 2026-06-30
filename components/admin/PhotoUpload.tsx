@@ -57,7 +57,7 @@ export default function PhotoUpload({ currentUrl, onUploaded }: PhotoUploadProps
 
       <div className="flex items-start gap-5">
         {/* Live preview */}
-        <div className="flex-shrink-0 w-24 h-24 rounded-full overflow-hidden bg-gray-100 border border-border ring-2 ring-white shadow-sm">
+        <div className="flex-shrink-0 w-24 h-24 rounded-full overflow-hidden bg-gray-100 border border-gray-200 ring-2 ring-white shadow-sm">
           {currentUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -78,7 +78,7 @@ export default function PhotoUpload({ currentUrl, onUploaded }: PhotoUploadProps
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={uploadState === "uploading"}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-border bg-white text-sm text-slate-text hover:border-navy hover:text-navy transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-gray-200 bg-white text-sm text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {uploadState === "uploading" ? (
               <Loader2 size={14} className="animate-spin" />
@@ -135,7 +135,7 @@ export default function PhotoUpload({ currentUrl, onUploaded }: PhotoUploadProps
       />
 
       {/* URL fallback */}
-      <div className="mt-4 pt-4 border-t border-border">
+      <div className="mt-4 pt-4 border-t border-gray-200">
         <label className="block text-xs text-muted mb-1.5">
           Or paste a photo URL instead of uploading
         </label>

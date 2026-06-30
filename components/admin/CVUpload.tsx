@@ -59,9 +59,9 @@ export default function CVUpload({ currentUrl, onUploaded }: CVUploadProps) {
 
       <div className="flex items-start gap-5">
         {/* Icon preview */}
-        <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100 border border-border flex items-center justify-center">
+        <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
           {isApiCV ? (
-            <FileText size={24} className="text-navy" />
+            <FileText size={24} className="text-gray-500" />
           ) : (
             <FileText size={24} className="text-gray-300" />
           )}
@@ -74,7 +74,7 @@ export default function CVUpload({ currentUrl, onUploaded }: CVUploadProps) {
               type="button"
               onClick={() => inputRef.current?.click()}
               disabled={uploadState === "uploading"}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-border bg-white text-sm text-slate-text hover:border-navy hover:text-navy transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-gray-200 bg-white text-sm text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {uploadState === "uploading" ? (
                 <Loader2 size={14} className="animate-spin" />
@@ -95,7 +95,7 @@ export default function CVUpload({ currentUrl, onUploaded }: CVUploadProps) {
                 href="/api/cv"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-navy underline"
+                className="text-xs text-gray-600 underline"
               >
                 Preview
               </a>
@@ -145,7 +145,7 @@ export default function CVUpload({ currentUrl, onUploaded }: CVUploadProps) {
       />
 
       {/* URL fallback */}
-      <div className="mt-4 pt-4 border-t border-border">
+      <div className="mt-4 pt-4 border-t border-gray-200">
         <label className="block text-xs text-muted mb-1.5">
           Or paste an external URL (Google Drive, Dropbox, etc.)
         </label>

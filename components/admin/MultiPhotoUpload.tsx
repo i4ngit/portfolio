@@ -65,7 +65,7 @@ export default function MultiPhotoUpload({ images, onChange, namePrefix }: Multi
       {images.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-3">
           {images.map((url) => (
-            <div key={url} className="relative aspect-square rounded-md overflow-hidden bg-gray-100 border border-border group">
+            <div key={url} className="relative aspect-square rounded-md overflow-hidden bg-gray-100 border border-gray-200 group">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt="" className="w-full h-full object-cover" />
               <button
@@ -84,7 +84,7 @@ export default function MultiPhotoUpload({ images, onChange, namePrefix }: Multi
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={uploadState === "uploading"}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-border bg-white text-sm text-slate-text hover:border-navy hover:text-navy transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-gray-200 bg-white text-sm text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {uploadState === "uploading" ? (
           <Loader2 size={14} className="animate-spin" />

@@ -22,7 +22,7 @@ export default function SaveBar({ state, label = "Save Changes" }: SaveBarProps)
       </button>
 
       {state === "saved" && (
-        <span className="flex items-center gap-1.5 text-sm text-green-accent font-medium">
+        <span className="flex items-center gap-1.5 text-sm text-gray-900 font-medium">
           <CheckCircle2 size={15} /> Saved
         </span>
       )}
@@ -35,7 +35,7 @@ export default function SaveBar({ state, label = "Save Changes" }: SaveBarProps)
 
       {state === "redis_not_configured" && (
         <div className="flex items-start gap-2 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-800 max-w-md">
-          <Database size={14} className="flex-shrink-0 mt-0.5 text-amber-600" />
+          <Database size={14} className="flex-shrink-0 mt-0.5 text-gray-500" />
           <span>
             <strong>Redis not connected.</strong> Changes can&apos;t be saved yet.{" "}
             <a

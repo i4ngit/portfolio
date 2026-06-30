@@ -29,7 +29,7 @@ export default function AdminContactPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold font-serif text-slate-text mb-6">Contact Info</h1>
+      <h1 className="text-2xl font-bold font-display text-gray-900 mb-6">Contact Info</h1>
       <form onSubmit={handleSubmit} className="card space-y-5">
         <div className="grid sm:grid-cols-2 gap-5">
           <AdminFormField label="Email" name="email" value={data.email ?? ""} onChange={set("email")} type="email" required />

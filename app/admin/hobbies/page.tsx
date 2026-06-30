@@ -67,7 +67,7 @@ export default function AdminHobbiesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold font-serif text-slate-text mb-6">Off the Clock</h1>
+      <h1 className="text-2xl font-bold font-display text-gray-900 mb-6">Off the Clock</h1>
 
       <div className="flex justify-end mb-4">
         {!editing && <button onClick={startAdd} className="btn-primary"><Plus size={16} /> Add Category</button>}
@@ -76,7 +76,7 @@ export default function AdminHobbiesPage() {
       {editing && (
         <form onSubmit={handleSave} className="card mb-6 space-y-4">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="font-semibold text-slate-text">{isNew ? "New Category" : "Edit Category"}</h2>
+            <h2 className="font-semibold text-gray-900">{isNew ? "New Category" : "Edit Category"}</h2>
             <button type="button" onClick={() => setEditing(null)}><X size={18} className="text-muted" /></button>
           </div>
 
@@ -101,12 +101,12 @@ export default function AdminHobbiesPage() {
         {categories.map(c => (
           <div key={c.id} className="card flex items-start gap-4">
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-slate-text text-sm">{c.name}</p>
-              <p className="text-xs text-navy mt-0.5">/off-the-clock/{c.slug}</p>
+              <p className="font-medium text-gray-900 text-sm">{c.name}</p>
+              <p className="text-xs text-gray-500 mt-0.5">/off-the-clock/{c.slug}</p>
               <p className="text-xs text-muted mt-0.5">{c.images.length} photo{c.images.length === 1 ? "" : "s"}</p>
             </div>
             <div className="flex gap-2 flex-shrink-0">
-              <button onClick={() => startEdit(c)} className="p-1.5 text-muted hover:text-navy"><Pencil size={15} /></button>
+              <button onClick={() => startEdit(c)} className="p-1.5 text-muted hover:text-gray-900"><Pencil size={15} /></button>
               <button onClick={() => setDeleting(c.id)} className="p-1.5 text-muted hover:text-red-600"><Trash2 size={15} /></button>
             </div>
           </div>
