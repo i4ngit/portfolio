@@ -35,7 +35,7 @@ export async function verifyPassword(plain: string): Promise<boolean> {
 }
 
 export async function getSession(): Promise<boolean> {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const cookie = cookieStore.get(SESSION_COOKIE);
   if (!cookie) return false;
 

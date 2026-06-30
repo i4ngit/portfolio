@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Lock } from "lucide-react";
 
 export default function LoginPage() {
@@ -75,7 +76,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-xs text-muted mt-6">
-          <a href="/" className="hover:text-navy transition-colors">← Back to site</a>
+          <Link href="/" className="hover:text-navy transition-colors">← Back to site</Link>
         </p>
       </div>
     </div>

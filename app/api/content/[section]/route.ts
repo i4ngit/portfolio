@@ -10,7 +10,7 @@ import {
   getContact, setContact,
 } from "@/lib/kv";
 
-type Params = { params: { section: string } };
+type Params = Promise<{ section: string }>;
 
 const GETTERS: Record<string, () => Promise<unknown>> = {
   hero: getHero,
@@ -32,8 +32,9 @@ const SETTERS: Record<string, (data: unknown) => Promise<void>> = {
   contact: (d) => setContact(d as Parameters<typeof setContact>[0]),
 };
 
-export async function GET(_req: Request, { params }: Params) {
-  const getter = GETTERS[params.section];
+export async function GET(_req: Request, { params }: { params: Params }) {
+  const { section } = await params;
+  const getter = GETTERS[section];
   if (!getter) {
     return NextResponse.json({ error: "Unknown section" }, { status: 404 });
   }
@@ -41,13 +42,14 @@ export async function GET(_req: Request, { params }: Params) {
   return NextResponse.json(data);
 }
 
-export async function PUT(request: Request, { params }: Params) {
+export async function PUT(request: Request, { params }: { params: Params }) {
+  const { section } = await params;
   const authenticated = await getSession();
   if (!authenticated) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const setter = SETTERS[params.section];
+  const setter = SETTERS[section];
   if (!setter) {
     return NextResponse.json({ error: "Unknown section" }, { status: 404 });
   }

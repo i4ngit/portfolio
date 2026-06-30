@@ -125,7 +125,7 @@ export default function AdminNewsPage() {
           </div>
         ))}
         {posts.length === 0 && !editing && (
-          <p className="text-muted text-sm py-6 text-center">No posts yet. Click "Add Post" to get started.</p>
+          <p className="text-muted text-sm py-6 text-center">No posts yet. Click &quot;Add Post&quot; to get started.</p>
         )}
       </div>
 
