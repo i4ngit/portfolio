@@ -46,9 +46,9 @@ export default function NewsList({ posts, showFilter = true }: NewsListProps) {
         </div>
       )}
 
-      <ul className="space-y-0.5">
-        {filtered.map((post) => (
-          <NewsCard key={post.id} post={post} />
+      <ul>
+        {filtered.map((post, i) => (
+          <NewsCard key={post.id} post={post} isLast={i === filtered.length - 1} />
         ))}
         {filtered.length === 0 && (
           <li className="text-sm text-gray-400 py-4">No posts in this category.</li>

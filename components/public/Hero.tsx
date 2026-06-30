@@ -10,7 +10,7 @@ export default function Hero({ hero }: HeroProps) {
   const firstParagraph = hero.bio.split("\n\n")[0];
 
   return (
-    <section id="about" className="min-h-[88vh] flex items-center">
+    <section className="min-h-[88vh] flex items-center">
       <div className="wide-column w-full py-16">
         <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-20 items-center">
 

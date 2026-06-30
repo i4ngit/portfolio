@@ -42,6 +42,9 @@ export default async function HomePage() {
 
   const allTags = [...new Set(research.flatMap((p) => p.tags))].sort();
 
+  const bioParagraphs = hero.bio.split("\n\n").filter(Boolean);
+  const remainingBio = bioParagraphs.slice(1);
+
   const milestonesByCategory = (
     ["academic", "application", "recognition", "research"] as const
   )
@@ -70,7 +73,24 @@ export default async function HomePage() {
         {sortedNews.length > 0 && (
           <section className="section-block" id="news">
             <p className="section-label">News</p>
+            <h2 className="font-display font-bold text-3xl text-gray-900 mb-6">
+              Recent updates
+            </h2>
             <NewsList posts={sortedNews} showFilter={false} />
+          </section>
+        )}
+
+        {/* About — remaining bio paragraphs */}
+        {remainingBio.length > 0 && (
+          <section className="section-block" id="about">
+            <p className="section-label">About</p>
+            <div className="space-y-4">
+              {remainingBio.map((para, i) => (
+                <p key={i} className="text-sm text-gray-600 leading-relaxed">
+                  {para}
+                </p>
+              ))}
+            </div>
           </section>
         )}
 
