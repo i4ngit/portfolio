@@ -69,18 +69,16 @@ export default function Hero({ hero }: HeroProps) {
 
         {/* ── Affiliation logos — full width row below the grid ── */}
         {hasAffiliations && (
-          <div className="border-t border-black/10 pt-10">
-            <div className="flex items-center justify-between gap-8">
-              {hero.affiliations!.map((a) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  key={a.id}
-                  src={a.logoUrl}
-                  alt={a.name}
-                  className="h-20 w-auto max-w-[160px] object-contain flex-1"
-                />
-              ))}
-            </div>
+          <div className="flex items-center justify-between gap-8 pb-4">
+            {hero.affiliations!.map((a) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={a.id}
+                src={a.logoUrl}
+                alt={a.name}
+                className="h-32 w-auto max-w-[200px] object-contain flex-1"
+              />
+            ))}
           </div>
         )}
       </div>
