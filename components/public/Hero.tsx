@@ -69,7 +69,7 @@ export default function Hero({ hero }: HeroProps) {
 
         {/* ── Affiliation logos — full width row below the grid ── */}
         {hasAffiliations && (
-          <div className="flex items-center justify-between gap-8 pb-4">
+          <div className="flex items-center justify-center gap-12 pb-4">
             {hero.affiliations!.map((a) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img
