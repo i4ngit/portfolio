@@ -13,6 +13,7 @@ const REDIS_TOKEN =
 const kv = new Redis({ url: REDIS_URL, token: REDIS_TOKEN });
 import type {
   HeroContent,
+  Affiliation,
   ResearchProject,
   Publication,
   ExperienceEntry,
@@ -34,6 +35,7 @@ const DEFAULTS = {
     linkedIn: "https://www.linkedin.com/in/ian-ocampo",
     institution: "University Name",
     year: "Class of 202X",
+    affiliations: [] satisfies Affiliation[],
   } satisfies HeroContent,
 
   research: [

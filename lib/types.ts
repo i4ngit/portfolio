@@ -1,3 +1,9 @@
+export interface Affiliation {
+  id: string;
+  name: string;    // shown as alt text and in the admin list
+  logoUrl: string;
+}
+
 export interface HeroContent {
   name: string;
   headline: string;
@@ -8,6 +14,7 @@ export interface HeroContent {
   linkedIn: string;
   institution: string;
   year: string;
+  affiliations?: Affiliation[];
 }
 
 export interface ResearchProject {
