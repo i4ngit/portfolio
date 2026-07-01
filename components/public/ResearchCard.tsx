@@ -31,7 +31,7 @@ export default function ResearchCard({ project, onClick }: ResearchCardProps) {
               {project.title}
             </h3>
             {project.status && (
-              <span className="text-xs text-gray-300 border border-gray-200 px-1.5 py-0.5 rounded flex-shrink-0">
+              <span className="text-xs text-gray-300 flex-shrink-0">
                 {STATUS_LABEL[project.status] ?? project.status}
               </span>
             )}
