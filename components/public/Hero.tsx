@@ -77,7 +77,7 @@ export default function Hero({ hero }: HeroProps) {
                     key={a.id}
                     src={a.logoUrl}
                     alt={a.name}
-                    className="h-10 w-auto object-contain opacity-50 grayscale hover:opacity-80 hover:grayscale-0 transition-all duration-300"
+                    className="h-16 w-auto object-contain"
                   />
                 ))}
               </div>
