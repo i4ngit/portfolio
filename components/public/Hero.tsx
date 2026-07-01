@@ -13,7 +13,7 @@ export default function Hero({ hero }: HeroProps) {
   return (
     <section className={hasAffiliations ? "" : "min-h-[88vh] flex items-center"}>
       <div className="wide-column w-full py-16">
-        <div className={`grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-20 items-center ${hasAffiliations ? "mb-12" : ""}`}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-20 items-center">
 
           {/* ── Left: Text ───────────────────────────────── */}
           <div className="order-2 lg:order-1">
@@ -69,7 +69,7 @@ export default function Hero({ hero }: HeroProps) {
 
         {/* ── Affiliation logos — full width row below the grid ── */}
         {hasAffiliations && (
-          <div className="flex items-center justify-center gap-12 pb-4">
+          <div className="flex items-center justify-center gap-12 py-16">
             {hero.affiliations!.map((a) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img
