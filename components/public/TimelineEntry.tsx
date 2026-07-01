@@ -20,7 +20,7 @@ export default function TimelineEntry({ entry }: TimelineEntryProps) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
             <h3 className="text-sm font-semibold text-gray-900">{entry.role}</h3>
-            <span className="text-xs text-gray-300">
+            <span className="text-xs text-gray-400">
               {TYPE_LABEL[entry.type]}
             </span>
           </div>
