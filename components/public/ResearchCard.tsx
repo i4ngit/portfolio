@@ -51,14 +51,7 @@ export default function ResearchCard({ project, onClick }: ResearchCardProps) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-3">
-        {project.projectType ? (
-          <p className="text-xs text-gray-400">
-            {TYPE_LABEL[project.projectType] ?? project.projectType}
-          </p>
-        ) : (
-          <span />
-        )}
+      <div className="mt-3">
         <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-400 group-hover:text-gray-900 transition-colors">
           <MousePointer2 size={11} />
           View details
