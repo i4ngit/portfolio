@@ -8,11 +8,12 @@ interface HeroProps {
 
 export default function Hero({ hero }: HeroProps) {
   const firstParagraph = hero.bio.split("\n\n")[0];
+  const hasAffiliations = (hero.affiliations?.length ?? 0) > 0;
 
   return (
-    <section className="min-h-[88vh] flex items-center">
+    <section className={hasAffiliations ? "" : "min-h-[88vh] flex items-center"}>
       <div className="wide-column w-full py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-20 items-center">
+        <div className={`grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-20 items-center ${hasAffiliations ? "mb-12" : ""}`}>
 
           {/* ── Left: Text ───────────────────────────────── */}
           <div className="order-2 lg:order-1">
@@ -33,24 +34,12 @@ export default function Hero({ hero }: HeroProps) {
             {/* Icon links */}
             <div className="flex items-center gap-2.5 mb-8">
               {hero.linkedIn && (
-                <a
-                  href={hero.linkedIn}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="icon-link"
-                  aria-label="LinkedIn"
-                >
+                <a href={hero.linkedIn} target="_blank" rel="noopener noreferrer" className="icon-link" aria-label="LinkedIn">
                   <Linkedin size={15} />
                 </a>
               )}
               {hero.cvUrl && (
-                <a
-                  href={hero.cvUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="icon-link"
-                  aria-label="View CV"
-                >
+                <a href={hero.cvUrl} target="_blank" rel="noopener noreferrer" className="icon-link" aria-label="View CV">
                   <FileText size={15} />
                 </a>
               )}
@@ -58,30 +47,11 @@ export default function Hero({ hero }: HeroProps) {
 
             {/* CTA buttons */}
             <div className="flex flex-wrap items-center gap-3">
-              <Link href="/#research" className="cta-primary">
-                Selected work
-              </Link>
+              <Link href="/#research" className="cta-primary">Selected work</Link>
               {hero.email && (
-                <a href={`mailto:${hero.email}`} className="cta-secondary">
-                  Email me
-                </a>
+                <a href={`mailto:${hero.email}`} className="cta-secondary">Email me</a>
               )}
             </div>
-
-            {/* Affiliation logos — only shown when configured in admin */}
-            {(hero.affiliations?.length ?? 0) > 0 && (
-              <div className="flex items-center justify-between mt-8 pt-6 border-t border-black/10">
-                {hero.affiliations!.map((a) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={a.id}
-                    src={a.logoUrl}
-                    alt={a.name}
-                    className="h-16 w-auto object-contain"
-                  />
-                ))}
-              </div>
-            )}
           </div>
 
           {/* ── Right: Photo ─────────────────────────────── */}
@@ -95,8 +65,24 @@ export default function Hero({ hero }: HeroProps) {
               />
             </div>
           </div>
-
         </div>
+
+        {/* ── Affiliation logos — full width row below the grid ── */}
+        {hasAffiliations && (
+          <div className="border-t border-black/10 pt-10">
+            <div className="flex items-center justify-between gap-8">
+              {hero.affiliations!.map((a) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={a.id}
+                  src={a.logoUrl}
+                  alt={a.name}
+                  className="h-20 w-auto max-w-[160px] object-contain flex-1"
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
