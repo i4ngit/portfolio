@@ -1,3 +1,4 @@
+import { MousePointer2 } from "lucide-react";
 import type { ResearchProject } from "@/lib/types";
 
 const TYPE_LABEL: Record<string, string> = {
@@ -22,7 +23,7 @@ export default function ResearchCard({ project, onClick }: ResearchCardProps) {
   return (
     <button
       onClick={onClick}
-      className="w-full text-left py-4 border-b border-gray-100 last:border-0 group cursor-pointer"
+      className="w-full text-left py-4 px-3 -mx-3 border-b border-gray-100 last:border-0 group cursor-pointer rounded-lg hover:bg-gray-50 transition-colors"
     >
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-4">
         <div className="flex-1 min-w-0">
@@ -41,17 +42,28 @@ export default function ResearchCard({ project, onClick }: ResearchCardProps) {
         <span className="text-xs text-gray-400 flex-shrink-0 sm:text-right">{project.period}</span>
       </div>
 
-      {project.findings ? (
-        <p className="text-xs text-gray-500 mt-2 leading-relaxed">{project.findings}</p>
-      ) : (
-        <p className="text-xs text-gray-500 mt-2 leading-relaxed line-clamp-2">{project.description}</p>
-      )}
+      <div className="mt-2.5 space-y-1">
+        <div className="flex gap-2 text-xs text-gray-500 leading-relaxed">
+          <span className="text-gray-300 flex-shrink-0 mt-0.5">·</span>
+          <span className="line-clamp-2">
+            {project.findings ?? project.description}
+          </span>
+        </div>
+      </div>
 
-      {project.projectType && (
-        <p className="text-xs text-gray-400 mt-2">
-          {TYPE_LABEL[project.projectType] ?? project.projectType}
-        </p>
-      )}
+      <div className="flex items-center justify-between mt-3">
+        {project.projectType ? (
+          <p className="text-xs text-gray-400">
+            {TYPE_LABEL[project.projectType] ?? project.projectType}
+          </p>
+        ) : (
+          <span />
+        )}
+        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-400 group-hover:text-gray-900 transition-colors">
+          <MousePointer2 size={11} />
+          View details
+        </span>
+      </div>
     </button>
   );
 }
