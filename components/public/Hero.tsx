@@ -70,14 +70,14 @@ export default function Hero({ hero }: HeroProps) {
 
             {/* Affiliation logos — only shown when configured in admin */}
             {(hero.affiliations?.length ?? 0) > 0 && (
-              <div className="flex flex-wrap items-center gap-5 mt-8 pt-6 border-t border-black/8">
+              <div className="flex items-center justify-between mt-8 pt-6 border-t border-black/10">
                 {hero.affiliations!.map((a) => (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     key={a.id}
                     src={a.logoUrl}
                     alt={a.name}
-                    className="h-7 w-auto object-contain opacity-50 grayscale hover:opacity-80 hover:grayscale-0 transition-all duration-300"
+                    className="h-10 w-auto object-contain opacity-50 grayscale hover:opacity-80 hover:grayscale-0 transition-all duration-300"
                   />
                 ))}
               </div>
